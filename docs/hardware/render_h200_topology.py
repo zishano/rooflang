@@ -4,7 +4,8 @@ import re,html
 from pathlib import Path
 root=ET.parse(Path(__file__).resolve().parent / 'H200Cluster-full-topology.drawio')
 cells=root.findall('.//mxCell'); byid={c.get('id'):c for c in cells}; scale=2
-im=Image.new('RGB',(4800,3300),'white'); draw=ImageDraw.Draw(im)
+model=root.find('.//mxGraphModel')
+im=Image.new('RGB',(int(model.get('pageWidth'))*scale,int(model.get('pageHeight'))*scale),'white'); draw=ImageDraw.Draw(im)
 font='/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc'
 def styles(c): return dict(p.split('=',1) for p in c.get('style','').split(';') if '=' in p)
 def geom(c):
@@ -34,7 +35,7 @@ for c in cells:
  path=[start]+points+[end]
  draw.line([xy(p) for p in path],fill=s.get('strokeColor','#64748B'),width=3)
  # Short labels are centered on their longest vertical/horizontal segment.
- if c.get('id','').startswith('cp'):continue
+ if not c.get('value'):continue
  segments=list(zip(path,path[1:])); p,q=max(segments,key=lambda z:abs(z[1][0]-z[0][0])+abs(z[1][1]-z[0][1]))
  lx=(p[0]+q[0])/2;ly=(p[1]+q[1])/2
  txt=html.unescape(re.sub('<[^>]+>','',c.get('value','')))
@@ -49,4 +50,4 @@ for c in cells:
   label(c.get('value',''),x,y+8,w,size,True)
  else:label(c.get('value',''),x,y,w,size)
 im.save(Path(__file__).resolve().parent / 'H200Cluster-full-topology.png')
-print('PNG exported: 4800 × 3300')
+print(f'PNG exported: {im.width} × {im.height}')

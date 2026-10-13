@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <mxfile host="app.diagrams.net" version="24.7.17" type="device">
   <diagram id="h200-full" name="H200Cluster 完整拓扑">
-    <mxGraphModel dx="2400" dy="1500" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1650" math="0" shadow="0">
+    <mxGraphModel dx="2400" dy="1500" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1850" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -17,25 +17,25 @@
         <mxCell id="node-label" value="&lt;b&gt;节点 n（n = 0 … n_nodes−1）&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;fontSize=14;spacing=8;strokeColor=none;fillColor=none;fontSize=16;align=left;verticalAlign=top;">
           <mxGeometry as="geometry" x="285" y="145" width="700" height="35" />
         </mxCell>
-        <mxCell id="nv" value="&lt;b&gt;逻辑 NVSwitch&lt;/b&gt;&lt;br&gt;本节点 8 张 GPU 共享" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=14;spacing=8;">
+        <mxCell id="nv" value="&lt;b&gt;逻辑 NVSwitch&lt;/b&gt;&lt;br&gt;节点内共享" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="950" y="190" width="470" height="70" />
         </mxCell>
-        <mxCell id="g0" value="&lt;b&gt;GPU 0 · H200 SXM&lt;/b&gt;&lt;br&gt;FP4 / FP8：1979 TFLOPS&lt;br&gt;BF16 / FP16：989.5 TFLOPS&lt;br&gt;FP32：494.5 TFLOPS" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontSize=14;spacing=8;">
+        <mxCell id="g0" value="&lt;b&gt;GPU 0&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="300" y="320" width="200" height="110" />
         </mxCell>
-        <mxCell id="h0" value="&lt;b&gt;HBM3e 0&lt;/b&gt;&lt;br&gt;144 GB" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=14;spacing=8;">
+        <mxCell id="h0" value="&lt;b&gt;HBM 0&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="300" y="470" width="200" height="65" />
         </mxCell>
-        <mxCell id="p0" value="&lt;b&gt;HGX PCIe Switch 0&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=14;spacing=8;">
+        <mxCell id="p0" value="&lt;b&gt;PCIe Switch 0&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="300" y="610" width="200" height="65" />
         </mxCell>
-        <mxCell id="s0" value="&lt;b&gt;NVMe SSD 0&lt;/b&gt;&lt;br&gt;256000 GB" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;fontSize=14;spacing=8;">
+        <mxCell id="s0" value="&lt;b&gt;SSD 0&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="300" y="730" width="200" height="65" />
         </mxCell>
-        <mxCell id="n0" value="&lt;b&gt;NIC 0 · ConnectX-7&lt;/b&gt;&lt;br&gt;400 Gb/s InfiniBand" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CFFAFE;strokeColor=#0891B2;fontSize=14;spacing=8;">
+        <mxCell id="n0" value="&lt;b&gt;NIC 0&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CFFAFE;strokeColor=#0891B2;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="300" y="885" width="200" height="65" />
         </mxCell>
-        <mxCell id="nv0" value="NVLink 450" edge="1" parent="1" source="g0" target="nv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#2563EB;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;">
+        <mxCell id="nv0" value="" tooltip="NVLink 450" edge="1" parent="1" source="g0" target="nv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#2563EB;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="400" y="285" />
@@ -43,10 +43,10 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="hbm0" value="HBM 4800" edge="1" parent="1" source="g0" target="h0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#16A34A;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
+        <mxCell id="hbm0" value="" tooltip="HBM 4800" edge="1" parent="1" source="g0" target="h0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#16A34A;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="gp0" value="PCIe 64" edge="1" parent="1" source="g0" target="p0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=1;entryY=0.5;">
+        <mxCell id="gp0" value="" tooltip="PCIe 64" edge="1" parent="1" source="g0" target="p0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=1;entryY=0.5;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="515" y="375" />
@@ -54,10 +54,10 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="sp0" value="读 14 / 写 7" edge="1" parent="1" source="s0" target="p0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
+        <mxCell id="sp0" value="" tooltip="读 14 / 写 7" edge="1" parent="1" source="s0" target="p0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="np0" value="PCIe 64" edge="1" parent="1" source="n0" target="p0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.08;exitY=0;entryX=0.08;entryY=1;">
+        <mxCell id="np0" value="" tooltip="PCIe 64" edge="1" parent="1" source="n0" target="p0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.08;exitY=0;entryX=0.08;entryY=1;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="315" y="850" />
@@ -65,7 +65,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="ib0" value="IB 50" edge="1" parent="1" source="n0" target="ib" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
+        <mxCell id="ib0" value="" tooltip="IB 50" edge="1" parent="1" source="n0" target="ib" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="400" y="990" />
@@ -73,22 +73,22 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="g1" value="&lt;b&gt;GPU 1 · H200 SXM&lt;/b&gt;&lt;br&gt;FP4 / FP8：1979 TFLOPS&lt;br&gt;BF16 / FP16：989.5 TFLOPS&lt;br&gt;FP32：494.5 TFLOPS" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontSize=14;spacing=8;">
+        <mxCell id="g1" value="&lt;b&gt;GPU 1&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="530" y="320" width="200" height="110" />
         </mxCell>
-        <mxCell id="h1" value="&lt;b&gt;HBM3e 1&lt;/b&gt;&lt;br&gt;144 GB" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=14;spacing=8;">
+        <mxCell id="h1" value="&lt;b&gt;HBM 1&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="530" y="470" width="200" height="65" />
         </mxCell>
-        <mxCell id="p1" value="&lt;b&gt;HGX PCIe Switch 1&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=14;spacing=8;">
+        <mxCell id="p1" value="&lt;b&gt;PCIe Switch 1&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="530" y="610" width="200" height="65" />
         </mxCell>
-        <mxCell id="s1" value="&lt;b&gt;NVMe SSD 1&lt;/b&gt;&lt;br&gt;256000 GB" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;fontSize=14;spacing=8;">
+        <mxCell id="s1" value="&lt;b&gt;SSD 1&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="530" y="730" width="200" height="65" />
         </mxCell>
-        <mxCell id="n1" value="&lt;b&gt;NIC 1 · ConnectX-7&lt;/b&gt;&lt;br&gt;400 Gb/s InfiniBand" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CFFAFE;strokeColor=#0891B2;fontSize=14;spacing=8;">
+        <mxCell id="n1" value="&lt;b&gt;NIC 1&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CFFAFE;strokeColor=#0891B2;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="530" y="885" width="200" height="65" />
         </mxCell>
-        <mxCell id="nv1" value="NVLink 450" edge="1" parent="1" source="g1" target="nv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#2563EB;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;">
+        <mxCell id="nv1" value="" tooltip="NVLink 450" edge="1" parent="1" source="g1" target="nv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#2563EB;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="630" y="285" />
@@ -96,10 +96,10 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="hbm1" value="HBM 4800" edge="1" parent="1" source="g1" target="h1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#16A34A;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
+        <mxCell id="hbm1" value="" tooltip="HBM 4800" edge="1" parent="1" source="g1" target="h1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#16A34A;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="gp1" value="PCIe 64" edge="1" parent="1" source="g1" target="p1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=1;entryY=0.5;">
+        <mxCell id="gp1" value="" tooltip="PCIe 64" edge="1" parent="1" source="g1" target="p1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=1;entryY=0.5;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="745" y="375" />
@@ -107,10 +107,10 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="sp1" value="读 14 / 写 7" edge="1" parent="1" source="s1" target="p1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
+        <mxCell id="sp1" value="" tooltip="读 14 / 写 7" edge="1" parent="1" source="s1" target="p1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="np1" value="PCIe 64" edge="1" parent="1" source="n1" target="p1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.08;exitY=0;entryX=0.08;entryY=1;">
+        <mxCell id="np1" value="" tooltip="PCIe 64" edge="1" parent="1" source="n1" target="p1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.08;exitY=0;entryX=0.08;entryY=1;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="545" y="850" />
@@ -118,7 +118,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="ib1" value="IB 50" edge="1" parent="1" source="n1" target="ib" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
+        <mxCell id="ib1" value="" tooltip="IB 50" edge="1" parent="1" source="n1" target="ib" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="630" y="990" />
@@ -126,22 +126,22 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="g2" value="&lt;b&gt;GPU 2 · H200 SXM&lt;/b&gt;&lt;br&gt;FP4 / FP8：1979 TFLOPS&lt;br&gt;BF16 / FP16：989.5 TFLOPS&lt;br&gt;FP32：494.5 TFLOPS" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontSize=14;spacing=8;">
+        <mxCell id="g2" value="&lt;b&gt;GPU 2&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="760" y="320" width="200" height="110" />
         </mxCell>
-        <mxCell id="h2" value="&lt;b&gt;HBM3e 2&lt;/b&gt;&lt;br&gt;144 GB" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=14;spacing=8;">
+        <mxCell id="h2" value="&lt;b&gt;HBM 2&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="760" y="470" width="200" height="65" />
         </mxCell>
-        <mxCell id="p2" value="&lt;b&gt;HGX PCIe Switch 2&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=14;spacing=8;">
+        <mxCell id="p2" value="&lt;b&gt;PCIe Switch 2&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="760" y="610" width="200" height="65" />
         </mxCell>
-        <mxCell id="s2" value="&lt;b&gt;NVMe SSD 2&lt;/b&gt;&lt;br&gt;256000 GB" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;fontSize=14;spacing=8;">
+        <mxCell id="s2" value="&lt;b&gt;SSD 2&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="760" y="730" width="200" height="65" />
         </mxCell>
-        <mxCell id="n2" value="&lt;b&gt;NIC 2 · ConnectX-7&lt;/b&gt;&lt;br&gt;400 Gb/s InfiniBand" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CFFAFE;strokeColor=#0891B2;fontSize=14;spacing=8;">
+        <mxCell id="n2" value="&lt;b&gt;NIC 2&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CFFAFE;strokeColor=#0891B2;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="760" y="885" width="200" height="65" />
         </mxCell>
-        <mxCell id="nv2" value="NVLink 450" edge="1" parent="1" source="g2" target="nv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#2563EB;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;">
+        <mxCell id="nv2" value="" tooltip="NVLink 450" edge="1" parent="1" source="g2" target="nv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#2563EB;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="860" y="285" />
@@ -149,10 +149,10 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="hbm2" value="HBM 4800" edge="1" parent="1" source="g2" target="h2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#16A34A;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
+        <mxCell id="hbm2" value="" tooltip="HBM 4800" edge="1" parent="1" source="g2" target="h2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#16A34A;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="gp2" value="PCIe 64" edge="1" parent="1" source="g2" target="p2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=1;entryY=0.5;">
+        <mxCell id="gp2" value="" tooltip="PCIe 64" edge="1" parent="1" source="g2" target="p2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=1;entryY=0.5;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="975" y="375" />
@@ -160,10 +160,10 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="sp2" value="读 14 / 写 7" edge="1" parent="1" source="s2" target="p2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
+        <mxCell id="sp2" value="" tooltip="读 14 / 写 7" edge="1" parent="1" source="s2" target="p2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="np2" value="PCIe 64" edge="1" parent="1" source="n2" target="p2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.08;exitY=0;entryX=0.08;entryY=1;">
+        <mxCell id="np2" value="" tooltip="PCIe 64" edge="1" parent="1" source="n2" target="p2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.08;exitY=0;entryX=0.08;entryY=1;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="775" y="850" />
@@ -171,7 +171,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="ib2" value="IB 50" edge="1" parent="1" source="n2" target="ib" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
+        <mxCell id="ib2" value="" tooltip="IB 50" edge="1" parent="1" source="n2" target="ib" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="860" y="990" />
@@ -179,22 +179,22 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="g3" value="&lt;b&gt;GPU 3 · H200 SXM&lt;/b&gt;&lt;br&gt;FP4 / FP8：1979 TFLOPS&lt;br&gt;BF16 / FP16：989.5 TFLOPS&lt;br&gt;FP32：494.5 TFLOPS" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontSize=14;spacing=8;">
+        <mxCell id="g3" value="&lt;b&gt;GPU 3&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="990" y="320" width="200" height="110" />
         </mxCell>
-        <mxCell id="h3" value="&lt;b&gt;HBM3e 3&lt;/b&gt;&lt;br&gt;144 GB" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=14;spacing=8;">
+        <mxCell id="h3" value="&lt;b&gt;HBM 3&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="990" y="470" width="200" height="65" />
         </mxCell>
-        <mxCell id="p3" value="&lt;b&gt;HGX PCIe Switch 3&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=14;spacing=8;">
+        <mxCell id="p3" value="&lt;b&gt;PCIe Switch 3&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="990" y="610" width="200" height="65" />
         </mxCell>
-        <mxCell id="s3" value="&lt;b&gt;NVMe SSD 3&lt;/b&gt;&lt;br&gt;256000 GB" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;fontSize=14;spacing=8;">
+        <mxCell id="s3" value="&lt;b&gt;SSD 3&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="990" y="730" width="200" height="65" />
         </mxCell>
-        <mxCell id="n3" value="&lt;b&gt;NIC 3 · ConnectX-7&lt;/b&gt;&lt;br&gt;400 Gb/s InfiniBand" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CFFAFE;strokeColor=#0891B2;fontSize=14;spacing=8;">
+        <mxCell id="n3" value="&lt;b&gt;NIC 3&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CFFAFE;strokeColor=#0891B2;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="990" y="885" width="200" height="65" />
         </mxCell>
-        <mxCell id="nv3" value="NVLink 450" edge="1" parent="1" source="g3" target="nv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#2563EB;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;">
+        <mxCell id="nv3" value="" tooltip="NVLink 450" edge="1" parent="1" source="g3" target="nv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#2563EB;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="1090" y="285" />
@@ -202,10 +202,10 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="hbm3" value="HBM 4800" edge="1" parent="1" source="g3" target="h3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#16A34A;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
+        <mxCell id="hbm3" value="" tooltip="HBM 4800" edge="1" parent="1" source="g3" target="h3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#16A34A;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="gp3" value="PCIe 64" edge="1" parent="1" source="g3" target="p3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=1;entryY=0.5;">
+        <mxCell id="gp3" value="" tooltip="PCIe 64" edge="1" parent="1" source="g3" target="p3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=1;entryY=0.5;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="1205" y="375" />
@@ -213,10 +213,10 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="sp3" value="读 14 / 写 7" edge="1" parent="1" source="s3" target="p3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
+        <mxCell id="sp3" value="" tooltip="读 14 / 写 7" edge="1" parent="1" source="s3" target="p3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="np3" value="PCIe 64" edge="1" parent="1" source="n3" target="p3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.08;exitY=0;entryX=0.08;entryY=1;">
+        <mxCell id="np3" value="" tooltip="PCIe 64" edge="1" parent="1" source="n3" target="p3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.08;exitY=0;entryX=0.08;entryY=1;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="1005" y="850" />
@@ -224,7 +224,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="ib3" value="IB 50" edge="1" parent="1" source="n3" target="ib" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
+        <mxCell id="ib3" value="" tooltip="IB 50" edge="1" parent="1" source="n3" target="ib" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="1090" y="990" />
@@ -232,22 +232,22 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="g4" value="&lt;b&gt;GPU 4 · H200 SXM&lt;/b&gt;&lt;br&gt;FP4 / FP8：1979 TFLOPS&lt;br&gt;BF16 / FP16：989.5 TFLOPS&lt;br&gt;FP32：494.5 TFLOPS" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontSize=14;spacing=8;">
+        <mxCell id="g4" value="&lt;b&gt;GPU 4&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="1220" y="320" width="200" height="110" />
         </mxCell>
-        <mxCell id="h4" value="&lt;b&gt;HBM3e 4&lt;/b&gt;&lt;br&gt;144 GB" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=14;spacing=8;">
+        <mxCell id="h4" value="&lt;b&gt;HBM 4&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="1220" y="470" width="200" height="65" />
         </mxCell>
-        <mxCell id="p4" value="&lt;b&gt;HGX PCIe Switch 4&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=14;spacing=8;">
+        <mxCell id="p4" value="&lt;b&gt;PCIe Switch 4&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="1220" y="610" width="200" height="65" />
         </mxCell>
-        <mxCell id="s4" value="&lt;b&gt;NVMe SSD 4&lt;/b&gt;&lt;br&gt;256000 GB" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;fontSize=14;spacing=8;">
+        <mxCell id="s4" value="&lt;b&gt;SSD 4&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="1220" y="730" width="200" height="65" />
         </mxCell>
-        <mxCell id="n4" value="&lt;b&gt;NIC 4 · ConnectX-7&lt;/b&gt;&lt;br&gt;400 Gb/s InfiniBand" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CFFAFE;strokeColor=#0891B2;fontSize=14;spacing=8;">
+        <mxCell id="n4" value="&lt;b&gt;NIC 4&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CFFAFE;strokeColor=#0891B2;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="1220" y="885" width="200" height="65" />
         </mxCell>
-        <mxCell id="nv4" value="NVLink 450" edge="1" parent="1" source="g4" target="nv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#2563EB;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;">
+        <mxCell id="nv4" value="" tooltip="NVLink 450" edge="1" parent="1" source="g4" target="nv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#2563EB;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="1320" y="285" />
@@ -255,10 +255,10 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="hbm4" value="HBM 4800" edge="1" parent="1" source="g4" target="h4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#16A34A;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
+        <mxCell id="hbm4" value="" tooltip="HBM 4800" edge="1" parent="1" source="g4" target="h4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#16A34A;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="gp4" value="PCIe 64" edge="1" parent="1" source="g4" target="p4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=1;entryY=0.5;">
+        <mxCell id="gp4" value="" tooltip="PCIe 64" edge="1" parent="1" source="g4" target="p4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=1;entryY=0.5;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="1435" y="375" />
@@ -266,10 +266,10 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="sp4" value="读 14 / 写 7" edge="1" parent="1" source="s4" target="p4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
+        <mxCell id="sp4" value="" tooltip="读 14 / 写 7" edge="1" parent="1" source="s4" target="p4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="np4" value="PCIe 64" edge="1" parent="1" source="n4" target="p4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.08;exitY=0;entryX=0.08;entryY=1;">
+        <mxCell id="np4" value="" tooltip="PCIe 64" edge="1" parent="1" source="n4" target="p4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.08;exitY=0;entryX=0.08;entryY=1;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="1235" y="850" />
@@ -277,7 +277,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="ib4" value="IB 50" edge="1" parent="1" source="n4" target="ib" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
+        <mxCell id="ib4" value="" tooltip="IB 50" edge="1" parent="1" source="n4" target="ib" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="1320" y="990" />
@@ -285,22 +285,22 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="g5" value="&lt;b&gt;GPU 5 · H200 SXM&lt;/b&gt;&lt;br&gt;FP4 / FP8：1979 TFLOPS&lt;br&gt;BF16 / FP16：989.5 TFLOPS&lt;br&gt;FP32：494.5 TFLOPS" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontSize=14;spacing=8;">
+        <mxCell id="g5" value="&lt;b&gt;GPU 5&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="1450" y="320" width="200" height="110" />
         </mxCell>
-        <mxCell id="h5" value="&lt;b&gt;HBM3e 5&lt;/b&gt;&lt;br&gt;144 GB" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=14;spacing=8;">
+        <mxCell id="h5" value="&lt;b&gt;HBM 5&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="1450" y="470" width="200" height="65" />
         </mxCell>
-        <mxCell id="p5" value="&lt;b&gt;HGX PCIe Switch 5&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=14;spacing=8;">
+        <mxCell id="p5" value="&lt;b&gt;PCIe Switch 5&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="1450" y="610" width="200" height="65" />
         </mxCell>
-        <mxCell id="s5" value="&lt;b&gt;NVMe SSD 5&lt;/b&gt;&lt;br&gt;256000 GB" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;fontSize=14;spacing=8;">
+        <mxCell id="s5" value="&lt;b&gt;SSD 5&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="1450" y="730" width="200" height="65" />
         </mxCell>
-        <mxCell id="n5" value="&lt;b&gt;NIC 5 · ConnectX-7&lt;/b&gt;&lt;br&gt;400 Gb/s InfiniBand" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CFFAFE;strokeColor=#0891B2;fontSize=14;spacing=8;">
+        <mxCell id="n5" value="&lt;b&gt;NIC 5&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CFFAFE;strokeColor=#0891B2;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="1450" y="885" width="200" height="65" />
         </mxCell>
-        <mxCell id="nv5" value="NVLink 450" edge="1" parent="1" source="g5" target="nv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#2563EB;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;">
+        <mxCell id="nv5" value="" tooltip="NVLink 450" edge="1" parent="1" source="g5" target="nv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#2563EB;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="1550" y="285" />
@@ -308,10 +308,10 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="hbm5" value="HBM 4800" edge="1" parent="1" source="g5" target="h5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#16A34A;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
+        <mxCell id="hbm5" value="" tooltip="HBM 4800" edge="1" parent="1" source="g5" target="h5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#16A34A;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="gp5" value="PCIe 64" edge="1" parent="1" source="g5" target="p5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=1;entryY=0.5;">
+        <mxCell id="gp5" value="" tooltip="PCIe 64" edge="1" parent="1" source="g5" target="p5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=1;entryY=0.5;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="1665" y="375" />
@@ -319,10 +319,10 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="sp5" value="读 14 / 写 7" edge="1" parent="1" source="s5" target="p5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
+        <mxCell id="sp5" value="" tooltip="读 14 / 写 7" edge="1" parent="1" source="s5" target="p5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="np5" value="PCIe 64" edge="1" parent="1" source="n5" target="p5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.08;exitY=0;entryX=0.08;entryY=1;">
+        <mxCell id="np5" value="" tooltip="PCIe 64" edge="1" parent="1" source="n5" target="p5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.08;exitY=0;entryX=0.08;entryY=1;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="1465" y="850" />
@@ -330,7 +330,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="ib5" value="IB 50" edge="1" parent="1" source="n5" target="ib" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
+        <mxCell id="ib5" value="" tooltip="IB 50" edge="1" parent="1" source="n5" target="ib" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="1550" y="990" />
@@ -338,22 +338,22 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="g6" value="&lt;b&gt;GPU 6 · H200 SXM&lt;/b&gt;&lt;br&gt;FP4 / FP8：1979 TFLOPS&lt;br&gt;BF16 / FP16：989.5 TFLOPS&lt;br&gt;FP32：494.5 TFLOPS" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontSize=14;spacing=8;">
+        <mxCell id="g6" value="&lt;b&gt;GPU 6&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="1680" y="320" width="200" height="110" />
         </mxCell>
-        <mxCell id="h6" value="&lt;b&gt;HBM3e 6&lt;/b&gt;&lt;br&gt;144 GB" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=14;spacing=8;">
+        <mxCell id="h6" value="&lt;b&gt;HBM 6&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="1680" y="470" width="200" height="65" />
         </mxCell>
-        <mxCell id="p6" value="&lt;b&gt;HGX PCIe Switch 6&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=14;spacing=8;">
+        <mxCell id="p6" value="&lt;b&gt;PCIe Switch 6&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="1680" y="610" width="200" height="65" />
         </mxCell>
-        <mxCell id="s6" value="&lt;b&gt;NVMe SSD 6&lt;/b&gt;&lt;br&gt;256000 GB" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;fontSize=14;spacing=8;">
+        <mxCell id="s6" value="&lt;b&gt;SSD 6&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="1680" y="730" width="200" height="65" />
         </mxCell>
-        <mxCell id="n6" value="&lt;b&gt;NIC 6 · ConnectX-7&lt;/b&gt;&lt;br&gt;400 Gb/s InfiniBand" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CFFAFE;strokeColor=#0891B2;fontSize=14;spacing=8;">
+        <mxCell id="n6" value="&lt;b&gt;NIC 6&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CFFAFE;strokeColor=#0891B2;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="1680" y="885" width="200" height="65" />
         </mxCell>
-        <mxCell id="nv6" value="NVLink 450" edge="1" parent="1" source="g6" target="nv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#2563EB;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;">
+        <mxCell id="nv6" value="" tooltip="NVLink 450" edge="1" parent="1" source="g6" target="nv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#2563EB;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="1780" y="285" />
@@ -361,10 +361,10 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="hbm6" value="HBM 4800" edge="1" parent="1" source="g6" target="h6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#16A34A;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
+        <mxCell id="hbm6" value="" tooltip="HBM 4800" edge="1" parent="1" source="g6" target="h6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#16A34A;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="gp6" value="PCIe 64" edge="1" parent="1" source="g6" target="p6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=1;entryY=0.5;">
+        <mxCell id="gp6" value="" tooltip="PCIe 64" edge="1" parent="1" source="g6" target="p6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=1;entryY=0.5;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="1895" y="375" />
@@ -372,10 +372,10 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="sp6" value="读 14 / 写 7" edge="1" parent="1" source="s6" target="p6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
+        <mxCell id="sp6" value="" tooltip="读 14 / 写 7" edge="1" parent="1" source="s6" target="p6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="np6" value="PCIe 64" edge="1" parent="1" source="n6" target="p6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.08;exitY=0;entryX=0.08;entryY=1;">
+        <mxCell id="np6" value="" tooltip="PCIe 64" edge="1" parent="1" source="n6" target="p6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.08;exitY=0;entryX=0.08;entryY=1;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="1695" y="850" />
@@ -383,7 +383,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="ib6" value="IB 50" edge="1" parent="1" source="n6" target="ib" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
+        <mxCell id="ib6" value="" tooltip="IB 50" edge="1" parent="1" source="n6" target="ib" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="1780" y="990" />
@@ -391,22 +391,22 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="g7" value="&lt;b&gt;GPU 7 · H200 SXM&lt;/b&gt;&lt;br&gt;FP4 / FP8：1979 TFLOPS&lt;br&gt;BF16 / FP16：989.5 TFLOPS&lt;br&gt;FP32：494.5 TFLOPS" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontSize=14;spacing=8;">
+        <mxCell id="g7" value="&lt;b&gt;GPU 7&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="1910" y="320" width="200" height="110" />
         </mxCell>
-        <mxCell id="h7" value="&lt;b&gt;HBM3e 7&lt;/b&gt;&lt;br&gt;144 GB" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=14;spacing=8;">
+        <mxCell id="h7" value="&lt;b&gt;HBM 7&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="1910" y="470" width="200" height="65" />
         </mxCell>
-        <mxCell id="p7" value="&lt;b&gt;HGX PCIe Switch 7&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=14;spacing=8;">
+        <mxCell id="p7" value="&lt;b&gt;PCIe Switch 7&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="1910" y="610" width="200" height="65" />
         </mxCell>
-        <mxCell id="s7" value="&lt;b&gt;NVMe SSD 7&lt;/b&gt;&lt;br&gt;256000 GB" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;fontSize=14;spacing=8;">
+        <mxCell id="s7" value="&lt;b&gt;SSD 7&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="1910" y="730" width="200" height="65" />
         </mxCell>
-        <mxCell id="n7" value="&lt;b&gt;NIC 7 · ConnectX-7&lt;/b&gt;&lt;br&gt;400 Gb/s InfiniBand" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CFFAFE;strokeColor=#0891B2;fontSize=14;spacing=8;">
+        <mxCell id="n7" value="&lt;b&gt;NIC 7&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CFFAFE;strokeColor=#0891B2;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="1910" y="885" width="200" height="65" />
         </mxCell>
-        <mxCell id="nv7" value="NVLink 450" edge="1" parent="1" source="g7" target="nv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#2563EB;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;">
+        <mxCell id="nv7" value="" tooltip="NVLink 450" edge="1" parent="1" source="g7" target="nv" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#2563EB;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=1;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="2010" y="285" />
@@ -414,10 +414,10 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="hbm7" value="HBM 4800" edge="1" parent="1" source="g7" target="h7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#16A34A;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
+        <mxCell id="hbm7" value="" tooltip="HBM 4800" edge="1" parent="1" source="g7" target="h7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#16A34A;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="gp7" value="PCIe 64" edge="1" parent="1" source="g7" target="p7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=1;entryY=0.5;">
+        <mxCell id="gp7" value="" tooltip="PCIe 64" edge="1" parent="1" source="g7" target="p7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;entryX=1;entryY=0.5;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="2125" y="375" />
@@ -425,10 +425,10 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="sp7" value="读 14 / 写 7" edge="1" parent="1" source="s7" target="p7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
+        <mxCell id="sp7" value="" tooltip="读 14 / 写 7" edge="1" parent="1" source="s7" target="p7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#64748B;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="np7" value="PCIe 64" edge="1" parent="1" source="n7" target="p7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.08;exitY=0;entryX=0.08;entryY=1;">
+        <mxCell id="np7" value="" tooltip="PCIe 64" edge="1" parent="1" source="n7" target="p7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.08;exitY=0;entryX=0.08;entryY=1;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="1925" y="850" />
@@ -436,7 +436,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="ib7" value="IB 50" edge="1" parent="1" source="n7" target="ib" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
+        <mxCell id="ib7" value="" tooltip="IB 50" edge="1" parent="1" source="n7" target="ib" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#0891B2;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="2010" y="990" />
@@ -444,19 +444,19 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="ib" value="&lt;b&gt;全局共享 InfiniBand Switch&lt;/b&gt;&lt;br&gt;所有节点的全部 NIC 均连接至此" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=14;spacing=8;">
+        <mxCell id="ib" value="&lt;b&gt;全局共享 InfiniBand Switch&lt;/b&gt;&lt;br&gt;跨节点互联" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="900" y="1060" width="570" height="75" />
         </mxCell>
-        <mxCell id="c0" value="&lt;b&gt;CPU 0 · Xeon 6767P&lt;/b&gt;&lt;br&gt;BF16 / FP16：255.29 TFLOPS&lt;br&gt;INT8：511.18 TOPS" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#7C3AED;fontSize=14;spacing=8;">
+        <mxCell id="c0" value="&lt;b&gt;CPU 0&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#7C3AED;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="30" y="570" width="210" height="105" />
         </mxCell>
-        <mxCell id="d0" value="&lt;b&gt;DDR5 0&lt;/b&gt;&lt;br&gt;1536 GB" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=14;spacing=8;">
+        <mxCell id="d0" value="&lt;b&gt;DDR5 0&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="30" y="755" width="210" height="70" />
         </mxCell>
-        <mxCell id="dram0" value="DRAM 332.8" edge="1" parent="1" source="c0" target="d0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#7C3AED;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
+        <mxCell id="dram0" value="" tooltip="DRAM 332.8" edge="1" parent="1" source="c0" target="d0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#7C3AED;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="cp0-0" value="PCIe 64" edge="1" parent="1" source="c0" target="p0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#7C3AED;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=0;">
+        <mxCell id="cp0-0" value="" tooltip="PCIe 64" edge="1" parent="1" source="c0" target="p0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#7C3AED;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=0;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="135" y="550" />
@@ -464,7 +464,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="cp0-1" value="PCIe 64" edge="1" parent="1" source="c0" target="p1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#7C3AED;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=0;">
+        <mxCell id="cp0-1" value="" tooltip="PCIe 64" edge="1" parent="1" source="c0" target="p1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#7C3AED;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=0;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="135" y="560" />
@@ -472,7 +472,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="cp0-2" value="PCIe 64" edge="1" parent="1" source="c0" target="p2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#7C3AED;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=0;">
+        <mxCell id="cp0-2" value="" tooltip="PCIe 64" edge="1" parent="1" source="c0" target="p2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#7C3AED;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=0;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="135" y="570" />
@@ -480,7 +480,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="cp0-3" value="PCIe 64" edge="1" parent="1" source="c0" target="p3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#7C3AED;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=0;">
+        <mxCell id="cp0-3" value="" tooltip="PCIe 64" edge="1" parent="1" source="c0" target="p3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#7C3AED;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=0;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="135" y="580" />
@@ -488,16 +488,16 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="c1" value="&lt;b&gt;CPU 1 · Xeon 6767P&lt;/b&gt;&lt;br&gt;BF16 / FP16：255.29 TFLOPS&lt;br&gt;INT8：511.18 TOPS" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#7C3AED;fontSize=14;spacing=8;">
+        <mxCell id="c1" value="&lt;b&gt;CPU 1&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#7C3AED;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="2160" y="570" width="210" height="105" />
         </mxCell>
-        <mxCell id="d1" value="&lt;b&gt;DDR5 1&lt;/b&gt;&lt;br&gt;1536 GB" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=14;spacing=8;">
+        <mxCell id="d1" value="&lt;b&gt;DDR5 1&lt;/b&gt;" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=14;spacing=8;">
           <mxGeometry as="geometry" x="2160" y="755" width="210" height="70" />
         </mxCell>
-        <mxCell id="dram1" value="DRAM 332.8" edge="1" parent="1" source="c1" target="d1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#7C3AED;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
+        <mxCell id="dram1" value="" tooltip="DRAM 332.8" edge="1" parent="1" source="c1" target="d1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#7C3AED;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;">
           <mxGeometry as="geometry" relative="1" />
         </mxCell>
-        <mxCell id="cp1-4" value="PCIe 64" edge="1" parent="1" source="c1" target="p4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#7C3AED;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=0;">
+        <mxCell id="cp1-4" value="" tooltip="PCIe 64" edge="1" parent="1" source="c1" target="p4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#7C3AED;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=0;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="2265" y="550" />
@@ -505,7 +505,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="cp1-5" value="PCIe 64" edge="1" parent="1" source="c1" target="p5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#7C3AED;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=0;">
+        <mxCell id="cp1-5" value="" tooltip="PCIe 64" edge="1" parent="1" source="c1" target="p5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#7C3AED;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=0;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="2265" y="560" />
@@ -513,7 +513,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="cp1-6" value="PCIe 64" edge="1" parent="1" source="c1" target="p6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#7C3AED;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=0;">
+        <mxCell id="cp1-6" value="" tooltip="PCIe 64" edge="1" parent="1" source="c1" target="p6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#7C3AED;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=0;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="2265" y="570" />
@@ -521,7 +521,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="cp1-7" value="PCIe 64" edge="1" parent="1" source="c1" target="p7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#7C3AED;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=0;">
+        <mxCell id="cp1-7" value="" tooltip="PCIe 64" edge="1" parent="1" source="c1" target="p7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#7C3AED;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;entryX=0.5;entryY=0;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
               <mxPoint x="2265" y="580" />
@@ -529,11 +529,13 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="qpi" value="QPI：192 GB/s / 方向；α = 0.05 μs；全双工" edge="1" parent="1" source="c0" target="c1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#7C3AED;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;entryX=0.5;entryY=1;dashed=1;">
+        <mxCell id="qpi" value="" tooltip="QPI：192 GB/s / 方向；α = 0.05 μs；全双工" edge="1" parent="1" source="c0" target="c1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;endArrow=none;strokeColor=#7C3AED;strokeWidth=2;fontSize=12;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.5;entryX=1;entryY=0.5;dashed=1;">
           <mxGeometry as="geometry" relative="1">
             <Array as="points">
-              <mxPoint x="135" y="1180" />
-              <mxPoint x="2265" y="1180" />
+              <mxPoint x="10" y="622" />
+              <mxPoint x="10" y="1180" />
+              <mxPoint x="2390" y="1180" />
+              <mxPoint x="2390" y="622" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -545,6 +547,9 @@
         </mxCell>
         <mxCell id="notes" value="&lt;b&gt;建模说明&lt;/b&gt;&lt;br&gt;&lt;br&gt;• 每节点：8 GPU、8 HBM、8 PCIe Switch、8 NIC、8 SSD、2 CPU、2 DDR5、1 逻辑 NVSwitch。&lt;br&gt;• 全集群：仅一个共享 IB Switch，位于节点循环之外。多节点时复制虚线框及其 CPU / DDR5，每张 NIC 仍接该 IB Switch。&lt;br&gt;• find_aggregate_bandwidth：少于 2 设备返回 ∞；同节点返回 450；跨节点返回 min(各节点参与设备数) × 50 GB/s。&lt;br&gt;• 数字来自代码预设，不代表对真实硬件规格的独立核验。" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;fontSize=14;spacing=8;strokeColor=none;fillColor=none;fontSize=16;align=left;verticalAlign=top;">
           <mxGeometry as="geometry" x="1620" y="1270" width="740" height="290" />
+        </mxCell>
+        <mxCell id="specs" value="&lt;b&gt;设备规格（同类设备统一列出，数值来自代码）&lt;/b&gt;&lt;br&gt;&lt;br&gt;GPU：H200 SXM；FP4 / FP8 1979 TFLOPS；BF16 / FP16 989.5 TFLOPS；FP32 494.5 TFLOPS。&lt;br&gt;CPU：Intel Xeon 6767P；BF16 / FP16 255.29 TFLOPS；INT8 511.18 TOPS。&lt;br&gt;每个 HBM：144 GB；每个 DDR5：1536 GB；每个 NVMe SSD：256000 GB。&lt;br&gt;NIC：Mellanox ConnectX-7，400 Gb/s InfiniBand。&lt;br&gt;线色：蓝色 NVLink；绿色 HBM；灰色 PCIe / SSD；青色 NIC PCIe / InfiniBand；紫色 CPU PCIe / DDR5 / QPI（底部虚线）。" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#CBD5E1;fontSize=14;spacing=8;strokeColor=none;fillColor=none;fontSize=16;align=left;verticalAlign=top;">
+          <mxGeometry as="geometry" x="40" y="1590" width="2300" height="230" />
         </mxCell>
       </root>
     </mxGraphModel>
