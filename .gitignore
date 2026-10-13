@@ -1,0 +1,12 @@
+__pycache__/
+.cache/
+.deployment/
+.github/
+.pytest_cache/
+*.json
+*.md
+*.pdf
+.venv/
+dsv4_flash_pareto/
+docs/
+run.sh
