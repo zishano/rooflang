@@ -11,3 +11,13 @@ python docs/models/generate_dsv4_flash_graph.py
 ```
 
 Requires Pillow and `/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc`. All output files are written beside the script.
+
+## Prefill comparison
+
+`DSV4-Flash-prefill-compute-graph.drawio` and its PNG show the prefill variant in the same four-section format. The expanded attention panel represents a ratio=4 layer, with notes for ratio=0 and ratio=128. It includes the three-way input bridge, window/compressed KV construction, index cache construction, a shared cache-lifetime barrier, and the final-token slice. The decode files remain available for comparison.
+
+```bash
+python docs/models/generate_dsv4_flash_prefill_graph.py
+```
+
+Validation: built the repository prefill graph with batch size 1 and sequence length 128; checked layers with ratios 0, 4, and 128, the last-token slice, and the shared persistence barrier. This validates the illustrated structure, not numerical inference or performance.
