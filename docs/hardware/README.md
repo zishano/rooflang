@@ -1,9 +1,9 @@
 # H200Cluster topology
 
-Complete topology based on `programs/presets/h200.py`: 46 hardware nodes and 59 links for one node, including the shared cluster IB switch. The topology shows device names and connections only. Device specifications, link bandwidth, latency, duplex settings, and multi-node replication rules are listed once in the footer; edge details are also available as draw.io tooltips.
+Hierarchical cluster topology based on `programs/presets/h200.py`: two example nodes share one global IB switch. Each node shows device lanes 0 and 7; lanes 1–6 and additional nodes are represented by ellipses. CPU 0 connects lanes 0–3 and CPU 1 connects lanes 4–7; omitted lane links are explained in the diagram. The topology shows device names and connections only. Device specifications, link bandwidth, latency, duplex settings, and multi-node replication rules are listed once in the footer; edge details are also available as draw.io tooltips.
 
 - `H200Cluster-full-topology.drawio`: editable diagrams.net XML.
-- `H200Cluster-full-topology.png`: 4800 × 3700 preview.
+- `H200Cluster-full-topology.png`: 4800 × 3300 preview.
 
 Regenerate from any working directory:
 

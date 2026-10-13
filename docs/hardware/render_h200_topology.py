@@ -24,7 +24,8 @@ def label(value,x,y,w,size=14,center=False):
   xx=x*scale+(w*scale-draw.textlength(line,font=f))/2 if center else (x+8)*scale
   draw.text((xx,y*scale),line,font=f,fill='#172033');y+=size*1.5
 # Background
-c=byid['node'];x,y,w,h=geom(c);draw.rounded_rectangle(xy((x,y,x+w,y+h)),radius=20,fill='#F8FAFC',outline='#CBD5E1',width=2)
+for id in ['n0-frame','n1-frame']:
+ c=byid[id];x,y,w,h=geom(c);draw.rounded_rectangle(xy((x,y,x+w,y+h)),radius=20,fill='#F8FAFC',outline='#CBD5E1',width=2)
 # edges behind boxes
 for c in cells:
  if c.get('edge')!='1':continue
@@ -43,7 +44,7 @@ for c in cells:
  xx=lx*scale-tw/2; yy=ly*scale-15
  draw.rectangle((xx-4,yy,xx+tw+4,yy+30),fill='white');draw.text((xx,yy),txt,font=f,fill=s.get('strokeColor','#64748B'))
 for c in cells:
- if c.get('vertex')!='1' or c.get('id')=='node':continue
+ if c.get('vertex')!='1' or c.get('id','').endswith('-frame'):continue
  x,y,w,h=geom(c);s=styles(c);size=float(s.get('fontSize','14'))
  if s.get('fillColor')!='none':
   draw.rounded_rectangle(xy((x,y,x+w,y+h)),radius=14,fill=s.get('fillColor','white'),outline=s.get('strokeColor','#CBD5E1'),width=2)
