@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" version="24.7.17" type="device">
+  <diagram id="h200-superchip" name="H200SuperChip 聚合硬件图">
+    <mxGraphModel grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1900" pageHeight="1440" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="H200SuperChip：单个八 GPU 节点的聚合硬件图" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;fontSize=30;fontFamily=Noto Sans CJK SC;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="35" y="20" width="1830" height="60" />
+        </mxCell>
+        <mxCell id="subtitle" value="按 programs/presets/h200.py 绘制：9 个硬件组件、8 条双向链路。名称中的 SuperChip 表示代码聚合抽象。" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;fontSize=20;fontFamily=Noto Sans CJK SC;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="35" y="90" width="1830" height="55" />
+        </mxCell>
+        <mxCell id="node-panel" value="" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontSize=20;fontFamily=Noto Sans CJK SC;spacing=10;">
+          <mxGeometry as="geometry" x="40" y="170" width="1400" height="740" />
+        </mxCell>
+        <mxCell id="node-title" value="一个 H200 节点的聚合表示" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;fontSize=25;fontFamily=Noto Sans CJK SC;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="65" y="185" width="1200" height="50" />
+        </mxCell>
+        <mxCell id="hbm" value="聚合 HBM&lt;br&gt;8 份 HBM" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=22;fontFamily=Noto Sans CJK SC;spacing=10;">
+          <mxGeometry as="geometry" x="820" y="270" width="245" height="90" />
+        </mxCell>
+        <mxCell id="gpu" value="聚合 GPU&lt;br&gt;8 张 H200" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontSize=22;fontFamily=Noto Sans CJK SC;spacing=10;">
+          <mxGeometry as="geometry" x="820" y="430" width="245" height="90" />
+        </mxCell>
+        <mxCell id="hgx" value="HGX PCIe Switch" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=21;fontFamily=Noto Sans CJK SC;spacing=10;">
+          <mxGeometry as="geometry" x="820" y="605" width="245" height="85" />
+        </mxCell>
+        <mxCell id="cpu-switch" value="CPU PCIe Switch" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=21;fontFamily=Noto Sans CJK SC;spacing=10;">
+          <mxGeometry as="geometry" x="520" y="605" width="245" height="85" />
+        </mxCell>
+        <mxCell id="cpu" value="聚合 CPU&lt;br&gt;2 颗 CPU" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE9FE;strokeColor=#7C3AED;fontSize=22;fontFamily=Noto Sans CJK SC;spacing=10;">
+          <mxGeometry as="geometry" x="200" y="605" width="245" height="85" />
+        </mxCell>
+        <mxCell id="dram" value="聚合 DDR5&lt;br&gt;2 份 DDR5" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DCFCE7;strokeColor=#16A34A;fontSize=22;fontFamily=Noto Sans CJK SC;spacing=10;">
+          <mxGeometry as="geometry" x="200" y="785" width="245" height="85" />
+        </mxCell>
+        <mxCell id="ssd" value="聚合 SSD&lt;br&gt;8 块 SSD" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;fontSize=22;fontFamily=Noto Sans CJK SC;spacing=10;">
+          <mxGeometry as="geometry" x="820" y="785" width="245" height="85" />
+        </mxCell>
+        <mxCell id="nic" value="聚合 NIC&lt;br&gt;8 张 ConnectX-7" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DBEAFE;strokeColor=#2563EB;fontSize=21;fontFamily=Noto Sans CJK SC;spacing=10;">
+          <mxGeometry as="geometry" x="1140" y="605" width="245" height="85" />
+        </mxCell>
+        <mxCell id="ib" value="InfiniBand Switch" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF3C7;strokeColor=#D97706;fontSize=22;fontFamily=Noto Sans CJK SC;spacing=10;">
+          <mxGeometry as="geometry" x="1540" y="605" width="310" height="85" />
+        </mxCell>
+        <mxCell id="e0" value="" edge="1" parent="1" source="gpu" target="hbm" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;endFill=0;strokeWidth=2;strokeColor=#475569;exitX=0.5;exitY=0;entryX=0.5;entryY=1;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e1" value="" edge="1" parent="1" source="gpu" target="hgx" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;endFill=0;strokeWidth=2;strokeColor=#475569;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e2" value="" edge="1" parent="1" source="cpu" target="cpu-switch" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;endFill=0;strokeWidth=2;strokeColor=#475569;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e3" value="" edge="1" parent="1" source="cpu-switch" target="hgx" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;endFill=0;strokeWidth=2;strokeColor=#475569;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e4" value="" edge="1" parent="1" source="cpu" target="dram" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;endFill=0;strokeWidth=2;strokeColor=#475569;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e5" value="" edge="1" parent="1" source="ssd" target="hgx" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;endFill=0;strokeWidth=2;strokeColor=#475569;exitX=0.5;exitY=0;entryX=0.5;entryY=1;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e6" value="" edge="1" parent="1" source="nic" target="hgx" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;endFill=0;strokeWidth=2;strokeColor=#475569;exitX=0;exitY=0.5;entryX=1;entryY=0.5;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e7" value="" edge="1" parent="1" source="nic" target="ib" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;endFill=0;strokeWidth=2;strokeColor=#475569;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="link-label" value="InfiniBand" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;fontSize=17;fontFamily=Noto Sans CJK SC;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="1400" y="565" width="175" height="40" />
+        </mxCell>
+        <mxCell id="external" value="代码中的网络交换机&lt;br&gt;不代表另一个已建模节点" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;fontSize=19;fontFamily=Noto Sans CJK SC;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="1480" y="740" width="385" height="90" />
+        </mxCell>
+        <mxCell id="note" value="八张 GPU 已合并为一个计算节点，因此不再显式表示 NVSwitch；两颗 CPU 已聚合，因此没有 CPU 间 QPI。" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;fontSize=21;fontFamily=Noto Sans CJK SC;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="40" y="945" width="1820" height="60" />
+        </mxCell>
+        <mxCell id="spec" value="聚合资源规格（全部来自代码）&lt;br&gt;GPU：FP4 / FP8 15832 TFLOPS；&lt;br&gt;BF16 / FP16 7916 TFLOPS；FP32 3956 TFLOPS。&lt;br&gt;CPU：BF16 / FP16 510.58 TFLOPS；INT8 1022.36 TOPS。&lt;br&gt;HBM：1152 GB；DDR5：3072 GB；SSD：2048000 GB。&lt;br&gt;内部 GPU 差异、NVSwitch 竞争及 CPU NUMA 差异被隐藏。" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;fontSize=20;fontFamily=Noto Sans CJK SC;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="40" y="1050" width="865" height="280" />
+        </mxCell>
+        <mxCell id="links-note" value="统一链路参数（带宽 GB/s；α 为 μs）&lt;br&gt;GPU ↔ HBM：38400 / 方向；α 0.5；非全双工。&lt;br&gt;4 条普通 PCIe：512 / 方向；α 0.5；全双工。&lt;br&gt;NIC ↔ IB Switch：400 / 方向；α 1；全双工。&lt;br&gt;CPU ↔ DDR5：665.6 / 方向；α 0.1；非全双工。&lt;br&gt;SSD → HGX Switch：112；反向：56；α 50；全双工。&lt;br&gt;普通 PCIe：GPU–HGX、NIC–HGX、CPU Switch–HGX、CPU–CPU Switch。" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;fontSize=20;fontFamily=Noto Sans CJK SC;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="950" y="1050" width="910" height="300" />
+        </mxCell>
+        <mxCell id="footer" value="图中连线表示可双向传输。非全双工链路的双向流量共享资源；聚合模型不意味着所有资源在实机上可无损合并。" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#FFFFFF;fontSize=18;fontFamily=Noto Sans CJK SC;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="40" y="1360" width="1820" height="60" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

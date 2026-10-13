@@ -13,3 +13,13 @@ python docs/hardware/render_h200_topology.py
 ```
 
 The generator uses the Python standard library. The PNG renderer needs Pillow (included through the project matplotlib dependency) and `/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc`. Adjust the renderer font path for other platforms. Both scripts write beside themselves. Hardware parameters are explicitly encoded from the preset; changes to the preset require updating the generator.
+
+## H200SuperChip
+
+`H200SuperChip-topology.drawio` and `H200SuperChip-topology.png` show the aggregated eight-GPU node. All 9 hardware components and 8 connections were checked against an instantiated `H200SuperChip` from `programs/presets/h200.py`. The diagram has no NVSwitch or QPI, matching the aggregation in code. Device and link parameters are listed once below the topology.
+
+Regenerate with Pillow and the same Noto CJK font used above:
+
+```bash
+python docs/hardware/generate_h200_superchip_topology.py
+```
