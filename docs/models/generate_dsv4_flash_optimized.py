@@ -151,3 +151,16 @@ for root in ET.parse(path).findall('.//root'):
  for c in cells:
   if c.get('edge')=='1':assert c.get('source') in ids and c.get('target') in ids
 print('Generated and validated 3 draw.io pages and 3 PNG previews')
+
+# Also export each page as an independent, single-page draw.io file.
+from copy import deepcopy
+for page, suffix in zip(mx.findall('diagram'), ('operators', 'placement', 'process'), strict=True):
+ single = ET.Element('mxfile', dict(mx.attrib))
+ single.append(deepcopy(page))
+ ET.indent(single)
+ target = OUT / f'DSV4-Flash-optimized-{suffix}.drawio'
+ ET.ElementTree(single).write(target, encoding='utf-8', xml_declaration=True)
+ parsed = ET.parse(target).getroot()
+ assert len(parsed.findall('diagram')) == 1
+ assert ET.tostring(parsed.find('diagram')) == ET.tostring(page)
+ print(f'Exported independent page: {target.name}')

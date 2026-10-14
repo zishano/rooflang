@@ -33,3 +33,11 @@ Validation: built the repository prefill graph with batch size 1 and sequence le
 Example: batch 8, prefix 8192, DP 4, CP 2, EP 8, PP [43], one 8-GPU H200 node. The actual graph was constructed and optimized; key shapes, assignments, communication neighbors and expert ownership were checked. See `DSV4-Flash-optimized-validation.json`. Timing simulation was not run. The drawings summarize dependencies and repeated nodes, not a measured timeline.
 
 Regenerate with `python docs/models/generate_dsv4_flash_optimized.py` (Pillow and Noto CJK font required).
+
+Each optimized diagram is also available as an independent single-page draw.io file, with the same editable contents and geometry as the corresponding page in the combined file:
+
+- `DSV4-Flash-optimized-operators.drawio`
+- `DSV4-Flash-optimized-placement.drawio`
+- `DSV4-Flash-optimized-process.drawio`
+
+The generator exports and validates all three files alongside the combined document.
