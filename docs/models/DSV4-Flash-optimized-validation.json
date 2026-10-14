@@ -1,0 +1,26 @@
+{
+  "configuration": {
+    "model": "dsv4_flash",
+    "B": 8,
+    "prefix": 8192,
+    "DP": 4,
+    "CP": 2,
+    "EP": 8,
+    "PP": [
+      43
+    ],
+    "GPUs": 8
+  },
+  "layer_inspected": 2,
+  "initial_kernels": 23139,
+  "optimized_kernels": 141043,
+  "verified": [
+    "graph and placement validation",
+    "DP-only GPU assignments",
+    "CP/DP GPU assignments",
+    "Q and KV shapes",
+    "ReduceScatter after attention",
+    "expert owners"
+  ],
+  "not_run": "Timing simulation for this configuration"
+}

@@ -21,3 +21,15 @@ python docs/models/generate_dsv4_flash_prefill_graph.py
 ```
 
 Validation: built the repository prefill graph with batch size 1 and sequence length 128; checked layers with ratios 0, 4, and 128, the last-token slice, and the shared persistence barrier. This validates the illustrated structure, not numerical inference or performance.
+
+## Optimized Decode and Placement
+
+`DSV4-Flash-optimized-decode.drawio` contains three editable pages, with PNG previews:
+
+1. `DSV4-Flash-optimized-operators.png`: a DP group in layer 2 and the shared EP MoE flow.
+2. `DSV4-Flash-optimized-placement.png`: GPU and memory mapping.
+3. `DSV4-Flash-optimized-process.png`: graph transformation/placement versus simulator execution order.
+
+Example: batch 8, prefix 8192, DP 4, CP 2, EP 8, PP [43], one 8-GPU H200 node. The actual graph was constructed and optimized; key shapes, assignments, communication neighbors and expert ownership were checked. See `DSV4-Flash-optimized-validation.json`. Timing simulation was not run. The drawings summarize dependencies and repeated nodes, not a measured timeline.
+
+Regenerate with `python docs/models/generate_dsv4_flash_optimized.py` (Pillow and Noto CJK font required).
