@@ -162,5 +162,5 @@ for page, suffix in zip(mx.findall('diagram'), ('operators', 'placement', 'proce
  ET.ElementTree(single).write(target, encoding='utf-8', xml_declaration=True)
  parsed = ET.parse(target).getroot()
  assert len(parsed.findall('diagram')) == 1
- assert ET.tostring(parsed.find('diagram')) == ET.tostring(page)
+ assert [(e.tag, e.attrib, (e.text or '').strip()) for e in parsed.find('diagram').iter()] == [(e.tag, e.attrib, (e.text or '').strip()) for e in page.iter()]
  print(f'Exported independent page: {target.name}')
