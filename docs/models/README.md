@@ -41,3 +41,15 @@ Each optimized diagram is also available as an independent single-page draw.io f
 - `DSV4-Flash-optimized-process.drawio`
 
 The generator exports and validates all three files alongside the combined document.
+
+## Simple construction flows
+
+Three independent, single-page draw.io documents use a horizontal process layout, each with a matching PNG preview:
+
+- `DSV4-Flash-decode-build-flow.drawio`: declaration of the single-step Decode graph.
+- `DSV4-Flash-decode-optimize-flow.drawio`: DP splitting, per-group CP transformations, communication cleanup, and preload dependencies.
+- `DSV4-Flash-decode-placement-flow.drawio`: GPU/expert assignment, tensor memory placement, and validation.
+
+Arrows describe construction steps rather than GPU execution order. All three use batch 8, prefix 8192, DP 4, CP 2, EP 8, and PP [43] on eight GPUs. The optimization and Placement flows are consecutive parts of `optimize_model_cluster_decode`, which mutates the graph and returns `(g, placement)`. Historical KV is read-only in this Decode model.
+
+Regenerate with `python docs/models/generate_dsv4_flash_stage_flows.py` (same Pillow and font requirements as above). The generator validates one page per XML document, unique cell identifiers, and edge references. The documents use standard editable diagrams.net XML; import into Feishu has not been tested here.

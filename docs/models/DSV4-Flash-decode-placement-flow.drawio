@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" version="24.7.17" type="device">
+  <diagram id="Decode Placement构建" name="Decode Placement构建">
+    <mxGraphModel grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1860" pageHeight="690">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="③ Placement：并行图如何映射到硬件" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=white;fontSize=30;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="30" y="20" width="1800" height="60" />
+        </mxCell>
+        <mxCell id="subtitle" value="同一优化函数的放置部分  ·  一个 H200 节点、GPU0–7、43 层都属于 stage 0" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=white;fontSize=20;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="30" y="85" width="1800" height="60" />
+        </mxCell>
+        <mxCell id="s0" value="创建 Placement&lt;br&gt;p = Placement(...)&lt;br&gt;绑定 hw 与 g" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E5F2FF;strokeColor=#B8CFE2;fontSize=20;spacing=10;">
+          <mxGeometry as="geometry" x="30" y="250" width="220" height="115" />
+        </mxCell>
+        <mxCell id="s1" value="放置输入与缓存&lt;br&gt;KV 读算子 → 各 GPU&lt;br&gt;标记 SSD / DRAM 来源" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E5F2FF;strokeColor=#B8CFE2;fontSize=20;spacing=10;">
+          <mxGeometry as="geometry" x="290" y="250" width="220" height="115" />
+        </mxCell>
+        <mxCell id="edge-1" edge="1" parent="1" source="s0" target="s1" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;rounded=0;strokeColor=#475569;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="s2" value="放置普通算子&lt;br&gt;DP：GPU 0/2/4/6&lt;br&gt;DP×CP：GPU 0–7" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E5F2FF;strokeColor=#B8CFE2;fontSize=20;spacing=10;">
+          <mxGeometry as="geometry" x="550" y="250" width="220" height="115" />
+        </mxCell>
+        <mxCell id="edge-2" edge="1" parent="1" source="s1" target="s2" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;rounded=0;strokeColor=#475569;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="s3" value="放置专家与路由&lt;br&gt;256 个专家分到 8 卡&lt;br&gt;每卡每层 32 个专家" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E5F2FF;strokeColor=#B8CFE2;fontSize=20;spacing=10;">
+          <mxGeometry as="geometry" x="810" y="250" width="220" height="115" />
+        </mxCell>
+        <mxCell id="edge-3" edge="1" parent="1" source="s2" target="s3" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;rounded=0;strokeColor=#475569;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="s4" value="处理流水阶段边界&lt;br&gt;与 KV 保活张量位置&lt;br&gt;本例没有跨阶段边界" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E5F2FF;strokeColor=#B8CFE2;fontSize=20;spacing=10;">
+          <mxGeometry as="geometry" x="1070" y="250" width="220" height="115" />
+        </mxCell>
+        <mxCell id="edge-4" edge="1" parent="1" source="s3" target="s4" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;rounded=0;strokeColor=#475569;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="s5" value="补齐通信张量位置&lt;br&gt;校验 g 与 p&lt;br&gt;记录 KV 显存占用" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E5F2FF;strokeColor=#B8CFE2;fontSize=20;spacing=10;">
+          <mxGeometry as="geometry" x="1330" y="250" width="220" height="115" />
+        </mxCell>
+        <mxCell id="edge-5" edge="1" parent="1" source="s4" target="s5" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;rounded=0;strokeColor=#475569;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="s6" value="返回 (g, p)&lt;br&gt;连同硬件图 hw&lt;br&gt;交给 Simulator" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E5F2FF;strokeColor=#B8CFE2;fontSize=20;spacing=10;">
+          <mxGeometry as="geometry" x="1590" y="250" width="220" height="115" />
+        </mxCell>
+        <mxCell id="edge-6" edge="1" parent="1" source="s5" target="s6" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;rounded=0;strokeColor=#475569;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="hw" value="硬件图 hw：GPU、HBM、DRAM、SSD 与链路" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;fontSize=20;spacing=10;">
+          <mxGeometry as="geometry" x="30" y="160" width="700" height="55" />
+        </mxCell>
+        <mxCell id="edge-7" edge="1" parent="1" source="hw" target="s0" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;rounded=0;strokeColor=#475569;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="380" y="230" />
+              <mxPoint x="140" y="230" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="note-panel0" value="" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontSize=21;spacing=10;">
+          <mxGeometry as="geometry" x="30" y="435" width="590" height="170" />
+        </mxCell>
+        <mxCell id="note-title0" value="算子 → GPU" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=white;fontSize=22;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="40" y="445" width="570" height="40" />
+        </mxCell>
+        <mxCell id="note-body0" value="每个 DP 组的代表 GPU 是 dp_rank × 2。&lt;br&gt;Embedding、输出头和 DP-only 算子在代表卡；&lt;br&gt;Q / Attention 等副本分布在全部 8 张卡。" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=white;fontSize=19;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="40" y="492" width="570" height="110" />
+        </mxCell>
+        <mxCell id="note-panel1" value="" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontSize=21;spacing=10;">
+          <mxGeometry as="geometry" x="640" y="435" width="590" height="170" />
+        </mxCell>
+        <mxCell id="note-title1" value="张量 → 内存" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=white;fontSize=22;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="650" y="445" width="570" height="40" />
+        </mxCell>
+        <mxCell id="note-body1" value="token 输入来源为 DRAM，历史 KV 来源为 SSD。&lt;br&gt;预加载后，KV 分片位于各卡本地 HBM；&lt;br&gt;通信端点位置决定需要走哪些硬件链路。" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=white;fontSize=19;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="650" y="492" width="570" height="110" />
+        </mxCell>
+        <mxCell id="note-panel2" value="" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontSize=21;spacing=10;">
+          <mxGeometry as="geometry" x="1250" y="435" width="590" height="170" />
+        </mxCell>
+        <mxCell id="note-title2" value="此时还没有执行模型" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=white;fontSize=22;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="1260" y="445" width="570" height="40" />
+        </mxCell>
+        <mxCell id="note-body2" value="Placement 保存设备和内存映射。&lt;br&gt;Simulator 随后结合 g、p、hw 模拟计算与传输；&lt;br&gt;箭头顺序不是各 GPU 的实际运行时间线。" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=white;fontSize=19;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="1260" y="492" width="570" height="110" />
+        </mxCell>
+        <mxCell id="foot" value="三张图串起来：declare_model → 原始 g → 并行变换后的 g → Placement → (g, p, hw) → Simulator。" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=white;fontSize=19;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="30" y="625" width="1800" height="45" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

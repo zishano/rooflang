@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" version="24.7.17" type="device">
+  <diagram id="Decode计算图构建" name="Decode计算图构建">
+    <mxGraphModel grid="1" gridSize="10" page="1" pageScale="1" pageWidth="1860" pageHeight="690">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="① Decode：原始计算图如何构建" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=white;fontSize=30;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="30" y="20" width="1800" height="60" />
+        </mxCell>
+        <mxCell id="subtitle" value="declare_model(decode=True)  ·  示例：batch=8，历史 KV 长度=8192，本次每条序列处理 1 个 token" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=white;fontSize=20;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="30" y="85" width="1800" height="60" />
+        </mxCell>
+        <mxCell id="s0" value="初始化计算图 g&lt;br&gt;设置 B=8、S=1&lt;br&gt;历史长度=8192" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E5F2FF;strokeColor=#B8CFE2;fontSize=20;spacing=10;">
+          <mxGeometry as="geometry" x="30" y="250" width="220" height="115" />
+        </mxCell>
+        <mxCell id="s1" value="构建 token 入口&lt;br&gt;ReadInput&lt;br&gt;→ Embedding" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E5F2FF;strokeColor=#B8CFE2;fontSize=20;spacing=10;">
+          <mxGeometry as="geometry" x="290" y="250" width="220" height="115" />
+        </mxCell>
+        <mxCell id="edge-1" edge="1" parent="1" source="s0" target="s1" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;rounded=0;strokeColor=#475569;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="s2" value="构建 43 层&lt;br&gt;Attention + MoE&lt;br&gt;连接残差与层间边" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E5F2FF;strokeColor=#B8CFE2;fontSize=20;spacing=10;">
+          <mxGeometry as="geometry" x="550" y="250" width="220" height="115" />
+        </mxCell>
+        <mxCell id="edge-2" edge="1" parent="1" source="s1" target="s2" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;rounded=0;strokeColor=#475569;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="s3" value="接入历史 KV&lt;br&gt;构建缓存读取算子&lt;br&gt;连接每层 Attention" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E5F2FF;strokeColor=#B8CFE2;fontSize=20;spacing=10;">
+          <mxGeometry as="geometry" x="810" y="250" width="220" height="115" />
+        </mxCell>
+        <mxCell id="edge-3" edge="1" parent="1" source="s2" target="s3" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;rounded=0;strokeColor=#475569;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="s4" value="构建输出头&lt;br&gt;final_norm → logits&lt;br&gt;→ sampling" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E5F2FF;strokeColor=#B8CFE2;fontSize=20;spacing=10;">
+          <mxGeometry as="geometry" x="1070" y="250" width="220" height="115" />
+        </mxCell>
+        <mxCell id="edge-4" edge="1" parent="1" source="s3" target="s4" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;rounded=0;strokeColor=#475569;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="s5" value="构建 KV 保活屏障&lt;br&gt;连接 KV 与采样结果&lt;br&gt;约束缓存生命周期" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E5F2FF;strokeColor=#B8CFE2;fontSize=20;spacing=10;">
+          <mxGeometry as="geometry" x="1330" y="250" width="220" height="115" />
+        </mxCell>
+        <mxCell id="edge-5" edge="1" parent="1" source="s4" target="s5" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;rounded=0;strokeColor=#475569;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="s6" value="校验并返回&lt;br&gt;原始计算图 g&lt;br&gt;及后续优化所需引用" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E5F2FF;strokeColor=#B8CFE2;fontSize=20;spacing=10;">
+          <mxGeometry as="geometry" x="1590" y="250" width="220" height="115" />
+        </mxCell>
+        <mxCell id="edge-6" edge="1" parent="1" source="s5" target="s6" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;rounded=0;strokeColor=#475569;strokeWidth=2;exitX=1;exitY=0.5;entryX=0;entryY=0.5;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="config" value="输入：模型配置 + Decode 参数" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F1F5F9;strokeColor=#64748B;fontSize=20;spacing=10;">
+          <mxGeometry as="geometry" x="30" y="160" width="480" height="55" />
+        </mxCell>
+        <mxCell id="edge-7" edge="1" parent="1" source="config" target="s0" style="edgeStyle=orthogonalEdgeStyle;endArrow=block;endFill=1;rounded=0;strokeColor=#475569;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;">
+          <mxGeometry as="geometry" relative="1">
+            <Array as="points">
+              <mxPoint x="270" y="230" />
+              <mxPoint x="140" y="230" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="note-panel0" value="" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontSize=21;spacing=10;">
+          <mxGeometry as="geometry" x="30" y="435" width="590" height="170" />
+        </mxCell>
+        <mxCell id="note-title0" value="图里包含什么？" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=white;fontSize=22;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="40" y="445" width="570" height="40" />
+        </mxCell>
+        <mxCell id="note-body0" value="算子节点 + 张量数据边 + 控制依赖。&lt;br&gt;先描述一次 Decode 需要做哪些计算；&lt;br&gt;此时还没有将算子分配到具体 GPU。" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=white;fontSize=19;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="40" y="492" width="570" height="110" />
+        </mxCell>
+        <mxCell id="note-panel1" value="" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontSize=21;spacing=10;">
+          <mxGeometry as="geometry" x="640" y="435" width="590" height="170" />
+        </mxCell>
+        <mxCell id="note-title1" value="为什么读历史 KV？" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=white;fontSize=22;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="650" y="445" width="570" height="40" />
+        </mxCell>
+        <mxCell id="note-body1" value="Attention 使用当前 Q 和历史 KV。&lt;br&gt;当前 Decode 路径把历史 KV 作为只读输入；&lt;br&gt;未建模追加当前 token 的 KV 更新过程。" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=white;fontSize=19;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="650" y="492" width="570" height="110" />
+        </mxCell>
+        <mxCell id="note-panel2" value="" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#CBD5E1;fontSize=21;spacing=10;">
+          <mxGeometry as="geometry" x="1250" y="435" width="590" height="170" />
+        </mxCell>
+        <mxCell id="note-title2" value="返回值不只有 g" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=white;fontSize=22;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="1260" y="445" width="570" height="40" />
+        </mxCell>
+        <mxCell id="note-body2" value="g, layers, emb, read_input,&lt;br&gt;kv_cache_reads, output_head&lt;br&gt;这些引用方便优化器定位并修改对应算子。" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=white;fontSize=19;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="1260" y="492" width="570" height="110" />
+        </mxCell>
+        <mxCell id="foot" value="箭头表示 Python 构图步骤。KV 读取在构图时后接入，不代表运行时要等 43 层算完才读取。" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=white;strokeColor=white;fontSize=19;spacing=10;align=left;verticalAlign=top;strokeColor=none;">
+          <mxGeometry as="geometry" x="30" y="625" width="1800" height="45" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
