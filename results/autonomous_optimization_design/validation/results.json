@@ -1,0 +1,360 @@
+{
+  "scope": "Isolated DSV4 Flash MoE fragment. All root inputs ready at t=0. Not a full-model benchmark or numerical-equivalence test.",
+  "candidate_action": "shared_down stream: 0 -> 1; all operators, dependencies, tensors and device/memory placement fixed",
+  "latency_reduction_pct": 26.6339375504684,
+  "peak_hbm0_delta_bytes": 131072.0,
+  "rows": [
+    {
+      "label": "remote_overlap_serial",
+      "status": "ok",
+      "signature": "a3debc95fdb31b067a6bf1bdddb5e40ac78366fcfbbf2f01e228097014153c10",
+      "total_us": 4.445239053763441,
+      "peak_bytes": {
+        "n0-hbm3e-0": 9961984.0,
+        "n0-hbm3e-1": 393216.0,
+        "n0-hbm3e-2": 393216.0,
+        "n0-hbm3e-3": 393216.0,
+        "n0-hbm3e-4": 393216.0,
+        "n0-hbm3e-5": 393216.0,
+        "n0-hbm3e-6": 393216.0,
+        "n0-hbm3e-7": 393216.0
+      },
+      "peak_hbm0_bytes": 9961984.0,
+      "flops": 1077149696.0,
+      "link_byte_hops": 8257536.0,
+      "trace": [
+        {
+          "name": "routed_combine",
+          "device": "n0-nvidia-b300-sxm-0",
+          "stream": 0,
+          "start_us": 0.0,
+          "end_us": 3.0583466666666665,
+          "compute_us": 0.0013981013333333333,
+          "memory_us": 0.11838761290322586,
+          "network_us": 3.0583466666666665
+        },
+        {
+          "name": "shared_down",
+          "device": "n0-nvidia-b300-sxm-0",
+          "stream": 0,
+          "start_us": 3.0583466666666665,
+          "end_us": 4.242288860215053,
+          "compute_us": 0.2386092942222222,
+          "memory_us": 1.1839421935483871,
+          "network_us": 0.0
+        },
+        {
+          "name": "moe_add",
+          "device": "n0-nvidia-b300-sxm-0",
+          "stream": 0,
+          "start_us": 4.242288860215053,
+          "end_us": 4.445239053763441,
+          "compute_us": 0.00011650844444444444,
+          "memory_us": 0.20295019354838711,
+          "network_us": 0.0
+        }
+      ]
+    },
+    {
+      "label": "remote_overlap_two_streams",
+      "status": "ok",
+      "signature": "a3debc95fdb31b067a6bf1bdddb5e40ac78366fcfbbf2f01e228097014153c10",
+      "total_us": 3.2612968602150536,
+      "peak_bytes": {
+        "n0-hbm3e-0": 10093056.0,
+        "n0-hbm3e-1": 393216.0,
+        "n0-hbm3e-2": 393216.0,
+        "n0-hbm3e-3": 393216.0,
+        "n0-hbm3e-4": 393216.0,
+        "n0-hbm3e-5": 393216.0,
+        "n0-hbm3e-6": 393216.0,
+        "n0-hbm3e-7": 393216.0
+      },
+      "peak_hbm0_bytes": 10093056.0,
+      "flops": 1077149696.0,
+      "link_byte_hops": 8257536.0,
+      "trace": [
+        {
+          "name": "shared_down",
+          "device": "n0-nvidia-b300-sxm-0",
+          "stream": 1,
+          "start_us": 0.0,
+          "end_us": 2.3678843870967743,
+          "compute_us": 0.2386092942222222,
+          "memory_us": 1.1839421935483871,
+          "network_us": 0.0
+        },
+        {
+          "name": "routed_combine",
+          "device": "n0-nvidia-b300-sxm-0",
+          "stream": 0,
+          "start_us": 0.0,
+          "end_us": 3.0583466666666665,
+          "compute_us": 0.0013981013333333333,
+          "memory_us": 0.11838761290322586,
+          "network_us": 3.0583466666666665
+        },
+        {
+          "name": "moe_add",
+          "device": "n0-nvidia-b300-sxm-0",
+          "stream": 0,
+          "start_us": 3.0583466666666665,
+          "end_us": 3.2612968602150536,
+          "compute_us": 0.00011650844444444444,
+          "memory_us": 0.20295019354838711,
+          "network_us": 0.0
+        }
+      ]
+    },
+    {
+      "label": "local_contention_serial",
+      "status": "ok",
+      "signature": "5885d4367fe8e0c308180c2a2b5968b3813ffb0f3c038598e53d55f33af23bdb",
+      "total_us": 1.8604428387096785,
+      "peak_bytes": {
+        "n0-hbm3e-0": 12321280.0
+      },
+      "peak_hbm0_bytes": 12321280.0,
+      "flops": 1077149696.0,
+      "link_byte_hops": 0,
+      "trace": [
+        {
+          "name": "routed_combine",
+          "device": "n0-nvidia-b300-sxm-0",
+          "stream": 0,
+          "start_us": 0.0,
+          "end_us": 0.47355045161290427,
+          "compute_us": 0.0013981013333333333,
+          "memory_us": 0.47355045161290427,
+          "network_us": 0.0
+        },
+        {
+          "name": "shared_down",
+          "device": "n0-nvidia-b300-sxm-0",
+          "stream": 0,
+          "start_us": 0.47355045161290427,
+          "end_us": 1.6574926451612915,
+          "compute_us": 0.2386092942222222,
+          "memory_us": 1.1839421935483871,
+          "network_us": 0.0
+        },
+        {
+          "name": "moe_add",
+          "device": "n0-nvidia-b300-sxm-0",
+          "stream": 0,
+          "start_us": 1.6574926451612915,
+          "end_us": 1.8604428387096785,
+          "compute_us": 0.00011650844444444444,
+          "memory_us": 0.20295019354838711,
+          "network_us": 0.0
+        }
+      ]
+    },
+    {
+      "label": "local_contention_two_streams",
+      "status": "ok",
+      "signature": "5885d4367fe8e0c308180c2a2b5968b3813ffb0f3c038598e53d55f33af23bdb",
+      "total_us": 1.8604428387096785,
+      "peak_bytes": {
+        "n0-hbm3e-0": 12845568.0
+      },
+      "peak_hbm0_bytes": 12845568.0,
+      "flops": 1077149696.0,
+      "link_byte_hops": 0,
+      "trace": [
+        {
+          "name": "routed_combine",
+          "device": "n0-nvidia-b300-sxm-0",
+          "stream": 0,
+          "start_us": 0.0,
+          "end_us": 0.9471009032258085,
+          "compute_us": 0.0013981013333333333,
+          "memory_us": 0.47355045161290427,
+          "network_us": 0.0
+        },
+        {
+          "name": "shared_down",
+          "device": "n0-nvidia-b300-sxm-0",
+          "stream": 1,
+          "start_us": 0.0,
+          "end_us": 1.6574926451612915,
+          "compute_us": 0.2386092942222222,
+          "memory_us": 1.1839421935483871,
+          "network_us": 0.0
+        },
+        {
+          "name": "moe_add",
+          "device": "n0-nvidia-b300-sxm-0",
+          "stream": 0,
+          "start_us": 1.6574926451612915,
+          "end_us": 1.8604428387096785,
+          "compute_us": 0.00011650844444444444,
+          "memory_us": 0.20295019354838711,
+          "network_us": 0.0
+        }
+      ]
+    },
+    {
+      "label": "dependency_guard_serial",
+      "status": "ok",
+      "signature": "c7f2982e646c7ce1875c930d3b9a0937a400153d03965628ca25ee1b22f2f834",
+      "total_us": 4.445239053763441,
+      "peak_bytes": {
+        "n0-hbm3e-0": 9961984.0,
+        "n0-hbm3e-1": 393216.0,
+        "n0-hbm3e-2": 393216.0,
+        "n0-hbm3e-3": 393216.0,
+        "n0-hbm3e-4": 393216.0,
+        "n0-hbm3e-5": 393216.0,
+        "n0-hbm3e-6": 393216.0,
+        "n0-hbm3e-7": 393216.0
+      },
+      "peak_hbm0_bytes": 9961984.0,
+      "flops": 1077149696.0,
+      "link_byte_hops": 8257536.0,
+      "trace": [
+        {
+          "name": "routed_combine",
+          "device": "n0-nvidia-b300-sxm-0",
+          "stream": 0,
+          "start_us": 0.0,
+          "end_us": 3.0583466666666665,
+          "compute_us": 0.0013981013333333333,
+          "memory_us": 0.11838761290322586,
+          "network_us": 3.0583466666666665
+        },
+        {
+          "name": "shared_down",
+          "device": "n0-nvidia-b300-sxm-0",
+          "stream": 0,
+          "start_us": 3.0583466666666665,
+          "end_us": 4.242288860215053,
+          "compute_us": 0.2386092942222222,
+          "memory_us": 1.1839421935483871,
+          "network_us": 0.0
+        },
+        {
+          "name": "moe_add",
+          "device": "n0-nvidia-b300-sxm-0",
+          "stream": 0,
+          "start_us": 4.242288860215053,
+          "end_us": 4.445239053763441,
+          "compute_us": 0.00011650844444444444,
+          "memory_us": 0.20295019354838711,
+          "network_us": 0.0
+        }
+      ]
+    },
+    {
+      "label": "dependency_guard_two_streams",
+      "status": "ok",
+      "signature": "c7f2982e646c7ce1875c930d3b9a0937a400153d03965628ca25ee1b22f2f834",
+      "total_us": 4.445239053763441,
+      "peak_bytes": {
+        "n0-hbm3e-0": 9961984.0,
+        "n0-hbm3e-1": 393216.0,
+        "n0-hbm3e-2": 393216.0,
+        "n0-hbm3e-3": 393216.0,
+        "n0-hbm3e-4": 393216.0,
+        "n0-hbm3e-5": 393216.0,
+        "n0-hbm3e-6": 393216.0,
+        "n0-hbm3e-7": 393216.0
+      },
+      "peak_hbm0_bytes": 9961984.0,
+      "flops": 1077149696.0,
+      "link_byte_hops": 8257536.0,
+      "trace": [
+        {
+          "name": "routed_combine",
+          "device": "n0-nvidia-b300-sxm-0",
+          "stream": 0,
+          "start_us": 0.0,
+          "end_us": 3.0583466666666665,
+          "compute_us": 0.0013981013333333333,
+          "memory_us": 0.11838761290322586,
+          "network_us": 3.0583466666666665
+        },
+        {
+          "name": "shared_down",
+          "device": "n0-nvidia-b300-sxm-0",
+          "stream": 1,
+          "start_us": 3.0583466666666665,
+          "end_us": 4.242288860215053,
+          "compute_us": 0.2386092942222222,
+          "memory_us": 1.1839421935483871,
+          "network_us": 0.0
+        },
+        {
+          "name": "moe_add",
+          "device": "n0-nvidia-b300-sxm-0",
+          "stream": 0,
+          "start_us": 4.242288860215053,
+          "end_us": 4.445239053763441,
+          "compute_us": 0.00011650844444444444,
+          "memory_us": 0.20295019354838711,
+          "network_us": 0.0
+        }
+      ]
+    },
+    {
+      "label": "capacity_guard_serial",
+      "status": "ok",
+      "signature": "757576b6fc02bdd9c63901ded7808d9b77ac19ecdd4cb84bf2e935ee9f060c50",
+      "total_us": 4.445239053763441,
+      "peak_bytes": {
+        "n0-hbm3e-0": 9961984.0,
+        "n0-hbm3e-1": 393216.0,
+        "n0-hbm3e-2": 393216.0,
+        "n0-hbm3e-3": 393216.0,
+        "n0-hbm3e-4": 393216.0,
+        "n0-hbm3e-5": 393216.0,
+        "n0-hbm3e-6": 393216.0,
+        "n0-hbm3e-7": 393216.0
+      },
+      "peak_hbm0_bytes": 9961984.0,
+      "flops": 1077149696.0,
+      "link_byte_hops": 8257536.0,
+      "trace": [
+        {
+          "name": "routed_combine",
+          "device": "n0-nvidia-b300-sxm-0",
+          "stream": 0,
+          "start_us": 0.0,
+          "end_us": 3.0583466666666665,
+          "compute_us": 0.0013981013333333333,
+          "memory_us": 0.11838761290322586,
+          "network_us": 3.0583466666666665
+        },
+        {
+          "name": "shared_down",
+          "device": "n0-nvidia-b300-sxm-0",
+          "stream": 0,
+          "start_us": 3.0583466666666665,
+          "end_us": 4.242288860215053,
+          "compute_us": 0.2386092942222222,
+          "memory_us": 1.1839421935483871,
+          "network_us": 0.0
+        },
+        {
+          "name": "moe_add",
+          "device": "n0-nvidia-b300-sxm-0",
+          "stream": 0,
+          "start_us": 4.242288860215053,
+          "end_us": 4.445239053763441,
+          "compute_us": 0.00011650844444444444,
+          "memory_us": 0.20295019354838711,
+          "network_us": 0.0
+        }
+      ]
+    },
+    {
+      "label": "capacity_guard_two_streams",
+      "status": "oom",
+      "signature": "757576b6fc02bdd9c63901ded7808d9b77ac19ecdd4cb84bf2e935ee9f060c50",
+      "error": "OOM on 'n0-hbm3e-0': 0.01 GB used, 0.01 GB capacity",
+      "used_bytes": 10093056.0,
+      "capacity_bytes": 10027520.0
+    }
+  ],
+  "checks": "PASS"
+}

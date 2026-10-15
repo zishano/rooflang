@@ -1,0 +1,9 @@
+﻿label,status,total_us,peak_hbm0_bytes,flops,link_byte_hops
+remote_overlap_serial,ok,4.445239053763441,9961984.0,1077149696.0,8257536.0
+remote_overlap_two_streams,ok,3.2612968602150536,10093056.0,1077149696.0,8257536.0
+local_contention_serial,ok,1.8604428387096785,12321280.0,1077149696.0,0
+local_contention_two_streams,ok,1.8604428387096785,12845568.0,1077149696.0,0
+dependency_guard_serial,ok,4.445239053763441,9961984.0,1077149696.0,8257536.0
+dependency_guard_two_streams,ok,4.445239053763441,9961984.0,1077149696.0,8257536.0
+capacity_guard_serial,ok,4.445239053763441,9961984.0,1077149696.0,8257536.0
+capacity_guard_two_streams,oom,,,,

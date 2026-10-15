@@ -1,0 +1,11 @@
+{
+  "repository": "zishano/rooflang",
+  "branch": "rooflang",
+  "commit": "33bc4a951d84750b09db29bad423c97494ac5b4d",
+  "created_at": "2026-10-15T19:56:36.017333+08:00",
+  "source_changes": false,
+  "validation": "8 scenarios; all assertions passed, including expected OOM",
+  "scope": "Design plus isolated simulator MVP; full-model integration, AI planner, numerical execution and GPU validation pending",
+  "delivery_branch": "rooflang_dev1",
+  "source_changes_note": "Model, simulator and search implementation unchanged; design, prototype and generated evidence added."
+}
