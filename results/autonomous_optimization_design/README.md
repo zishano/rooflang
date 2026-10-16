@@ -1,5 +1,7 @@
 # LLM 推理软件自主优化：方案与最小验证
 
+> 本目录保留初版方案和已完成的异步执行 MVP。后续 `rooflang_dev1` 开发以 [最新设计与开发入口](../../docs/autonomous_optimization/README.md) 为准；最新路线优先验证数据分片与权重所有权优化，异步执行作为第二类架构和已有验证基础。
+
 - `方案设计.md`：两类软件架构、主攻路线、动作前置条件与代价、AI闭环、验证门槛及实施计划。
 - `minimal_validation.py`：可执行的 DSV4 Flash MoE 片段，使用原有 RoofLang 类与模拟器。
 - `validation/results.json`：包含逐算子 trace、峰值内存、冻结契约及正反例结果。

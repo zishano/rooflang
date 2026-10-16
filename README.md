@@ -30,6 +30,13 @@ rooflang/
 
 ## Usage
 
+### Autonomous optimization development
+
+Development for the constrained LLM inference optimization project continues on
+`rooflang_dev1`. See the [design and development guide](docs/autonomous_optimization/README.md)
+for the five-week plan, architecture alternatives, validation protocol, H100
+verification scope, and implementation status.
+
 ### Run a single simulation
 
 ```bash
