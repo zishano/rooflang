@@ -242,17 +242,17 @@ class Simulator:
         self._multi_stream_waiting: List[Tuple[float, Kernel]] = []
         self._resolve_cache.clear()
         self._collective_info_cache.clear()
-        self._remaining_predecessors = dict(self._graph._dag.in_degree())
+        self._remaining_predecessors = dict(self._graph._dag.in_degree()) # 每个节点还在等多少个前驱
         self._ready_time = defaultdict(float)
 
         # ── Memory tracking init ────────────────────────────────────
-        self._mem_usage: Dict[Memory, float] = defaultdict(float)
+        self._mem_usage: Dict[Memory, float] = defaultdict(float) # 当前各内存用了多少字节
         self._mem_peak: Dict[Memory, float] = defaultdict(float)
-        self._out_refcount: Dict[Tensor, int] = defaultdict(int)
+        self._out_refcount: Dict[Tensor, int] = defaultdict(int) # 某份输出还有多少后续引用
         self._root_inputs: Dict[Kernel, List[Tensor]] = {}
-        self._alive: Dict[Memory, Set[Tuple[Tensor, str]]] = defaultdict(set)
-        self._passthrough = self._build_passthrough()
-
+        self._alive: Dict[Memory, Set[Tuple[Tensor, str]]] = defaultdict(set) # 当前仍存活的数据
+        self._passthrough = self._build_passthrough() # 哪些输出实际沿用上游存储
+        # 统计输出引用
         for kernel in self._graph.kernels:
             for edge in self._graph._out_edges(kernel):
                 for out_name in edge.mapping:
@@ -261,6 +261,7 @@ class Simulator:
                         self._out_refcount[real_t] += 1
 
         _seen_wid = set()
+        # 遍历权重并去重
         for kernel in self._graph.kernels:
             for t in kernel.weights.values():
                 mem = self._placement.get_tensor_memory(t)
@@ -273,6 +274,7 @@ class Simulator:
                     _seen_wid.add(key)
                 self._mem_usage[mem] += t.size_bytes
                 self._alive[mem].add((t, "weight"))
+            # 检查数据前驱，处理没有前驱的kernel
             has_data_predecessor = bool(self._graph._in_edges(kernel))
             if not has_data_predecessor:
                 inputs_for_kernel = []
@@ -290,12 +292,14 @@ class Simulator:
             self._check_oom(mem, None)
 
         # ── Schedule root kernels ───────────────────────────────────
+        # 把没有任何前驱的节点加入初始事件队列
         for kernel in self._graph.topological_sort():
             if self._remaining_predecessors[kernel] == 0:
                 dev, stream, _, _ = self._resolve(kernel)
                 self._push(0.0, "start", kernel, dev, stream)
 
         while self._eq:
+            # (预计发生时间,唯一编号,事件类型,对应算子,主设备,stream)
             now, event_id, typ, kernel, dev, stream = heapq.heappop(self._eq)
             if kernel in self._completed:
                 continue
@@ -401,7 +405,7 @@ class Simulator:
                            for _, waiting in self._multi_stream_waiting):
                         self._multi_stream_waiting.append((now, kernel))
                     return False
-
+        # 理想计算机时间，本地内存访问时间，网络启动延迟，基础传输时间，链路
         ct, mt, alpha, xfer, link_data = self._base_times(kernel, dev, parts)
         rk = RunningKernel(kernel, dev, stream, cap, ct, mt,
                            alpha, xfer, link_data, parts, now)
@@ -415,11 +419,11 @@ class Simulator:
         self._on_dev.setdefault(dev, []).append(rk)
         for fk in rk.fabric_keys:
             self._on_fab.setdefault(fk, []).append(rk)
-        self._allocate_outputs(kernel)
+        self._allocate_outputs(kernel) # 先把已有任务按旧份额推进到当前时刻。
         self._advance_peers(rk, now)
-        self._recompute_shares(rk)
-        self._schedule_end(rk)
-        self._resched_peers(rk)
+        self._recompute_shares(rk) # 新任务加入后，重新分配资源份额。
+        self._schedule_end(rk) # 估算新任务完成时间。
+        self._resched_peers(rk) # 更新受影响的已有任务完成时间。
         return True
 
     def _schedule_next_pending(

@@ -229,6 +229,7 @@ docker_args=(
     run
     --rm
     --init
+    --network host
     --read-only
     --cap-drop ALL
     --security-opt no-new-privileges

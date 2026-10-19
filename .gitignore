@@ -10,3 +10,7 @@ __pycache__/
 dsv4_flash_pareto/
 docs/
 run.sh
+results/
+tests/
+tools/
+agents/find_pareto_frontier/agent.env

@@ -36,11 +36,11 @@ RUN curl -fsSL https://chatgpt.com/codex/install.sh | sh \
     && ln -sfn "releases/$codex_release" \
         /opt/rooflang-agent/codex/standalone/current
 
-RUN curl -fsSL https://claude.ai/install.sh | bash \
-    && claude --version \
-    && mkdir -p /opt/rooflang-agent/claude/versions \
-    && cp -a "$(readlink -f "$(command -v claude)")" \
-        /opt/rooflang-agent/claude/versions/
+# RUN curl -fsSL https://claude.ai/install.sh | bash \
+#     && claude --version \
+#     && mkdir -p /opt/rooflang-agent/claude/versions \
+#     && cp -a "$(readlink -f "$(command -v claude)")" \
+#         /opt/rooflang-agent/claude/versions/
 
 COPY requirements.txt /tmp/rooflang-requirements.txt
 RUN python3 -m venv /opt/rooflang-venv \
@@ -59,7 +59,7 @@ RUN chmod 0755 /usr/local/bin/rooflang-agent \
 
 ENV HOME=/home/agent \
     CODEX_HOME=/home/agent/.codex \
-    CLAUDE_CONFIG_DIR=/home/agent/.claude \
+    #CLAUDE_CONFIG_DIR=/home/agent/.claude \
     PATH=/home/agent/.local/bin:/opt/rooflang-venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     PYTHONPATH=/workspace \
     PYTHONDONTWRITEBYTECODE=1 \

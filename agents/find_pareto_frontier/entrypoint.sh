@@ -65,6 +65,22 @@ case "$agent" in
         if [[ -n "$agent_model" ]]; then
             command+=(--model "$agent_model")
         fi
+        if [[ -n "${OPENAI_BASE_URL:-}" ]]; then
+            [[ -n "${OPENAI_API_KEY:-}" ]] || {
+                echo "error: OPENAI_API_KEY is required" >&2
+                exit 2
+            }
+
+            command+=(
+                --config 'model_provider="local_gateway"'
+                --config 'model_providers.local_gateway.name="Local Gateway"'
+                --config "model_providers.local_gateway.base_url=\"$OPENAI_BASE_URL\""
+                --config 'model_providers.local_gateway.env_key="OPENAI_API_KEY"'
+                --config 'model_providers.local_gateway.wire_api="responses"'
+                --config 'model_providers.local_gateway.requires_openai_auth=false'
+            )
+        fi
+
         exec "${command[@]}" - < "$task_file"
         ;;
     claude)

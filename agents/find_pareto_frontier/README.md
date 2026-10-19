@@ -17,6 +17,20 @@ cp agent.env.example /secure/path/agent.env
 
 Use `--agent claude` for Claude Code, `--agent-model` for a model override, and `--runs-root` to change the retained-run parent. Equivalent `ROOFLANG_*` environment variables are supported; see `./run-agent.sh --help`.
 
+### Build networking without changing system configuration
+
+Use `--base-image REGISTRY/PATH/ubuntu:24.04` (or `ROOFLANG_BASE_IMAGE`)
+to select an Ubuntu 24.04 image from a registry reachable by the Docker daemon.
+The default remains `ubuntu:24.04`. An explicit alternative registry avoids
+Docker Hub mirror selection; it must contain the image and be reachable without
+depending on shell proxy variables being inherited by the daemon.
+
+Exported host `HTTP_PROXY`, `HTTPS_PROXY`, `ALL_PROXY`, `NO_PROXY` and lowercase
+equivalents are forwarded as predefined Docker build arguments for `RUN` steps.
+They do not configure the daemon's base-image downloads. Build credentials and
+API keys are not read from `--env-file`; that file is only for the running agent.
+Runtime proxies must still be included explicitly in that file.
+
 ## Isolation and Output
 
 Every invocation creates `runs/run-<timestamp>-<random>/` containing the rendered task, an independent Rooflang copy, persistent `artifacts/`, and `agent.trace.log`. Runs are retained and safe to execute in parallel; the input Rooflang tree is untouched.
