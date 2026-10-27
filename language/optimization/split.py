@@ -21,7 +21,10 @@ Each next_comm has n inputs ("i0".."i{n-1}") and 1 output ("y").
 from copy import deepcopy
 from fractions import Fraction
 
-from rooflang.language.kernels.comm import Broadcast, Gather, Reduce, Scatter
+from rooflang.language.kernels.comm import (
+    AttentionLseReduce, Broadcast, CyclicScatter, Gather, Reduce, Scatter,
+    SparseGlobalSelect,
+)
 from rooflang.language.kernels.forward import (
     Attn, AttnRes, DpskV4SparseAttn, ElementwiseOp, Embedding, Gemm,
     Glm52SparseAttn, KimiK3DeltaAttn, KimiK3DeltaAttnStateStore,
@@ -55,6 +58,19 @@ def _make_scatter(tensor, n, dim=0):
         dim = len(tensor.shape) + dim
     shard = _shard_shape(tensor.shape, n, dim)
     comm = Scatter(total_bytes=tensor.size_bytes, world=n, dim=dim)
+    comm.inputs = {"x": Tensor(tensor.dtype, tensor.shape)}
+    comm.outputs = {f"o{i}": Tensor(tensor.dtype, shard) for i in range(n)}
+    return comm
+
+
+def _make_cyclic_scatter(tensor, n, dim=1, interleave_size=1):
+    """Create a sequence Scatter with cyclic rank ownership."""
+    if dim < 0:
+        dim = len(tensor.shape) + dim
+    shard = _shard_shape(tensor.shape, n, dim)
+    comm = CyclicScatter(
+        total_bytes=tensor.size_bytes, world=n, dim=dim,
+        interleave_size=interleave_size)
     comm.inputs = {"x": Tensor(tensor.dtype, tensor.shape)}
     comm.outputs = {f"o{i}": Tensor(tensor.dtype, shard) for i in range(n)}
     return comm
@@ -121,7 +137,8 @@ def _context_split_attn_decode(kernel, n):
     }
     index_tensor = kernel.inputs.get("index_kv")
     if index_tensor is not None:
-        prev_comms["index_kv"] = _make_scatter(index_tensor, n, dim=1)
+        prev_comms["index_kv"] = _make_scatter(
+            index_tensor, n, dim=1)
     for port in ("index_q", "index_weights"):
         tensor = kernel.inputs.get(port)
         if tensor is not None:
@@ -204,6 +221,24 @@ def _context_split_attn_decode(kernel, n):
     return prev_comms, copies, next_comms
 
 
+def _context_split_attn_decode_dcp(kernel, n):
+    """DCP-specific copy: cyclic main KV and replicated DSV4 Index-K."""
+    prev_comms, copies, next_comms = _context_split_attn_decode(kernel, n)
+    if not isinstance(kernel, DpskV4SparseAttn):
+        return prev_comms, copies, next_comms
+
+    kv_tensor = kernel.inputs["kv"]
+    prev_comms["kv"] = _make_cyclic_scatter(kv_tensor, n, dim=1)
+    index_tensor = kernel.inputs.get("index_kv")
+    if index_tensor is not None:
+        prev_comms["index_kv"] = _make_broadcast(index_tensor, n)
+        for copy in copies:
+            copy.indexer_s_kv = kernel.indexer_s_kv
+            copy.inputs["index_kv"] = Tensor(
+                index_tensor.dtype, index_tensor.shape)
+    return prev_comms, copies, next_comms
+
+
 def kv_persistence_split(kernel, n):
     """Shard KV barrier inputs while replicating the stage output token."""
     output_ports = {
@@ -240,6 +275,141 @@ def kv_persistence_split(kernel, n):
         port: _make_dependency_gather(tensor, n)
         for port, tensor in kernel.outputs.items()
     }
+    return prev_comms, copies, next_comms
+
+
+def kv_persistence_split_dcp(kernel, n):
+    """Uniform-CP DCP layout: cyclic main KV, replicated Index-K."""
+    output_ports = {
+        port for port in kernel.inputs
+        if port in ("prefill_output", "decode_output")
+    } if isinstance(kernel, Nop) else set()
+    if len(output_ports) != 1:
+        raise TypeError("DCP KV persistence split requires its barrier Nop")
+    output_port = next(iter(output_ports))
+
+    def replicated(port):
+        return port == output_port or port.endswith("_index")
+
+    prev_comms = {}
+    for port, tensor in kernel.inputs.items():
+        if replicated(port):
+            prev_comms[port] = _make_broadcast(tensor, n)
+        else:
+            prev_comms[port] = _make_cyclic_scatter(tensor, n, dim=1)
+
+    copies = []
+    for _ in range(n):
+        copy = Nop()
+        copy.inputs = {
+            port: Tensor(
+                tensor.dtype,
+                tensor.shape if replicated(port)
+                else _shard_shape(tensor.shape, n, dim=1))
+            for port, tensor in kernel.inputs.items()
+        }
+        copy.outputs = {
+            port: Tensor(tensor.dtype, tensor.shape)
+            for port, tensor in kernel.outputs.items()
+        }
+        copies.append(copy)
+    next_comms = {
+        port: _make_dependency_gather(tensor, n)
+        for port, tensor in kernel.outputs.items()
+    }
+    return prev_comms, copies, next_comms
+
+
+def _make_attention_lse_reduce(tensor, n, stats_shape, dtype="bf16"):
+    """Create an exact stable merge for normalized attention partials."""
+    stats_bytes = 1
+    for dim in stats_shape:
+        stats_bytes *= dim
+    stats_bytes *= dtype_bytes("fp32")
+    comm = AttentionLseReduce(
+        total_bytes=tensor.size_bytes,
+        world=n,
+        dtype=dtype,
+        stats_bytes_per_rank=stats_bytes,
+    )
+    comm.inputs = {
+        **{
+            f"i{i}": Tensor(tensor.dtype, tensor.shape)
+            for i in range(n)
+        },
+        **{
+            f"s{i}": Tensor("fp32", stats_shape)
+            for i in range(n)
+        },
+    }
+    comm.outputs = {"y": Tensor(tensor.dtype, tensor.shape)}
+    return comm
+
+
+def _context_split_attn_decode_exact(kernel, n):
+    """Split decode attention with exact global selection and LSE merge."""
+    prev_comms, copies, _ = _context_split_attn_decode_dcp(kernel, n)
+    stats_shape = (kernel.B, kernel.S_q, 2)
+    stats_tensor = Tensor("fp32", stats_shape)
+
+    # The local attention kernels each process a disjoint partition of the
+    # same globally-selected sparse token set.  Their normalized outputs are
+    # merged by LSE statistics rather than summed.
+    next_comms = {
+        "y": _make_attention_lse_reduce(
+            kernel.outputs["y"], n, stats_shape,
+            dtype=kernel.outputs["y"].dtype),
+    }
+    for rank, copy in enumerate(copies):
+        copy.outputs["attn_stats"] = Tensor(
+            stats_tensor.dtype, stats_tensor.shape)
+        copy.global_selection = True
+        copy.global_k_sel = kernel.k_sel
+        copy.global_S_kv = kernel.S_kv
+        copy.cp_world = n
+        copy.cp_rank = rank
+        copy.dcp_dataflow = {
+            "index_kv_layout": "replicated",
+            "topk_scope": "global_cache_positions",
+            "topk_tie_break": "ascending_global_position",
+            "kv_owner": "global_position % cp_world",
+            "owner_local_row": "global_position // cp_world",
+            "local_attention": "selected_rows_owned_by_cp_rank",
+            "partial_output": "normalized_output_plus_lse_stats",
+            "merge": "stable_logsumexp",
+        }
+        if isinstance(kernel, DpskV4SparseAttn):
+            copy.index_cache_replicated = "index_kv" in kernel.inputs
+            copy.selected_kv_owner_map = "cyclic"
+            copy.selection_load_model = "uniform_expected_local_count"
+
+    # GLM-5.2 keeps its established distributed index-selection accounting.
+    # DSV4's Index-K is replicated and selected independently on every rank.
+    index_tensor = kernel.inputs.get("index_kv")
+    if index_tensor is not None and not isinstance(kernel, DpskV4SparseAttn):
+        kv_tensor = kernel.inputs["kv"]
+        selected_kv_bytes = (
+            kernel.B * kernel.S_q * kernel.k_sel
+            * kv_tensor.shape[-1] * dtype_bytes(kernel.kv_dtype))
+        selection_metadata_bytes = (
+            kernel.B * kernel.S_q * kernel.k_sel * 8)
+        selection_flops = kernel.B * kernel.S_q * kernel.indexer_s_kv
+        prev_comms["index_kv"] = SparseGlobalSelect(
+            total_bytes=index_tensor.size_bytes,
+            world=n,
+            dim=1,
+            selected_kv_bytes=selected_kv_bytes,
+            selection_metadata_bytes=selection_metadata_bytes,
+            selection_flops=selection_flops,
+        )
+        local_index_shape = _shard_shape(index_tensor.shape, n, dim=1)
+        prev_comms["index_kv"].inputs = {
+            "x": Tensor(index_tensor.dtype, index_tensor.shape)}
+        prev_comms["index_kv"].outputs = {
+            f"o{i}": Tensor(index_tensor.dtype, local_index_shape)
+            for i in range(n)
+        }
+
     return prev_comms, copies, next_comms
 
 
@@ -397,7 +567,7 @@ def head_split(kernel, n):
                 qk_nope_head_dim=kernel.qk_nope_head_dim,
                 kv_transform_dtype=kernel.kv_transform_dtype,
                 indexer_mode=kernel.indexer_mode,
-                indexer_s_kv=kernel.indexer_s_kv,
+                indexer_s_kv=kernel.indexer_s_kv // n,
                 indexer_h=(kernel.indexer_h // n
                            if kernel.indexer_mode == "full" else 0),
                 indexer_hd=kernel.indexer_hd,
@@ -477,6 +647,14 @@ def context_split_prefill(kernel, n):
 
 def context_split_decode(kernel, n):
     """Apply context parallelism using the decode attention strategy."""
+    return _context_split(kernel, n, is_prefill=False)
+
+
+def context_split_decode_exact(kernel, n):
+    """Decode context split with global sparse selection and LSE merge."""
+    if isinstance(
+            kernel, (DpskV4SparseAttn, Glm52SparseAttn, KimiK3MlaAttn)):
+        return _context_split_attn_decode_exact(kernel, n)
     return _context_split(kernel, n, is_prefill=False)
 
 

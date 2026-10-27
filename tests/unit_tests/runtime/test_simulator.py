@@ -11,7 +11,7 @@ from rooflang.language.graph import ComputeGraph, FabricEdge, HardwareGraph
 from rooflang.language.hardware.component import Compute, Memory
 from rooflang.language.kernels.kernel import Kernel
 from rooflang.language.kernels.comm import AllReduce, Gather, Scatter
-from rooflang.language.kernels.forward import Nop, Slice
+from rooflang.language.kernels.forward import KVCacheAppend, Nop, ReadInput, Slice
 from rooflang.language.kernels.identity import Concat, Spawn
 from rooflang.language.optimization.comm import optimize_comms
 from rooflang.language.placement import Placement
@@ -83,6 +83,38 @@ def _place_comm_tensors(placement, kernel, memories):
 
 
 class TestSingleKernel:
+    def test_kv_append_writes_only_new_rows_and_aliases_cache_storage(self):
+        hw, gpu, hbm = _hw(read_bw=1000.0, write_bw=1000.0)
+        cache_read = ReadInput(8, "fp8")
+        cache_read.outputs = {"y": Tensor("fp8", (1, 4, 2))}
+        token1 = ReadInput(2, "fp8")
+        token1.outputs = {"y": Tensor("fp8", (1, 1, 2))}
+        token2 = ReadInput(2, "fp8")
+        token2.outputs = {"y": Tensor("fp8", (1, 1, 2))}
+        append1 = KVCacheAppend(batch=1, capacity=4, dim=2)
+        append2 = KVCacheAppend(batch=1, capacity=4, dim=2)
+
+        graph = ComputeGraph()
+        for kernel in (cache_read, token1, token2, append1, append2):
+            graph.add_kernel(kernel)
+        graph.add_data_edge(cache_read, append1, {"y": "cache"})
+        graph.add_data_edge(token1, append1, {"y": "new_kv"})
+        graph.add_data_edge(append1, append2, {"updated": "cache"})
+        graph.add_data_edge(token2, append2, {"y": "new_kv"})
+
+        placement = Placement(hardware=hw)
+        for kernel in graph.kernels:
+            placement.set_kernel_device(kernel, gpu)
+        result = _sim(graph, placement, hw)
+
+        assert append1.input_bytes == 2
+        assert append1.output_bytes == 2
+        assert append1.output_write_fraction("updated") == pytest.approx(0.25)
+        assert result.trace[-1].memory_time_us == pytest.approx(4e-6)
+        # Cache allocation (8 B) plus both source updates (2 B each). An
+        # out-of-place full-cache output would raise this peak to 20 B.
+        assert max(result.peak_memory.values()) == pytest.approx(12.0)
+
     def test_mixed_dtype_compute_segments_are_summed(self):
         hw, gpu, hbm = _hw(
             read_bw=1000.0,

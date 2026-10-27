@@ -109,6 +109,12 @@ def export_trace(result: SimulationResult, path: str) -> None:
                 "inputs": inputs,
                 "weights": weights,
                 "outputs": outputs,
+                **({"decode_step": kernel.decode_step} if hasattr(kernel, "decode_step") else {}),
+                **({"layer_id": kernel.layer_id, "dp_rank": kernel.dp_rank}
+                   if hasattr(kernel, "dp_rank") and hasattr(kernel, "layer_id") else {}),
+                **({"cp_rank": kernel.spec.rank, "cp_world": kernel.spec.cp,
+                    "context_before_step": kernel.spec.context}
+                   if hasattr(kernel, "spec") else {}),
             },
         })
 
@@ -190,6 +196,9 @@ def export_trace(result: SimulationResult, path: str) -> None:
             "gpu_stats": gpu_stats,
         },
     }
+
+    if hasattr(result, "dcp_metadata"):
+        output["otherData"]["dcp"] = result.dcp_metadata
 
     with open(path, "w") as f:
         json.dump(output, f)

@@ -225,24 +225,32 @@ class Simulator:
         self._measurement_start = measurement_start
         self._resolve_cache = {}
         self._collective_info_cache = {}
+        self._base_times_cache = {}
+        self._reuse_times = False
 
-    def run(self) -> SimulationResult:
+    def run(self, *, precompleted=(), reuse_plan=False) -> SimulationResult:
         """Execute DES and return trace + total time."""
+        skipped = set(precompleted)
+        self._reuse_times = reuse_plan
         self._kernel_end: Dict[Kernel, float] = {}
         self._stream_end: Dict[Tuple[Compute, int], float] = {}
         self._on_dev: Dict[Compute, List[RunningKernel]] = {}
         self._on_fab: Dict[FabricKey, List[RunningKernel]] = {}
         self._trace: List[TraceEntry] = []
-        self._completed: Set[Kernel] = set()
+        self._completed: Set[Kernel] = set(skipped)
         self._eid = 0
         self._eq: list = []
         self._end_event_ids: Dict[RunningKernel, int] = {}
         self._stream_active: Dict[Tuple[Compute, int], RunningKernel] = {}
         self._stream_pending: Dict[Tuple[Compute, int], List[Kernel]] = {}
         self._multi_stream_waiting: List[Tuple[float, Kernel]] = []
-        self._resolve_cache.clear()
-        self._collective_info_cache.clear()
-        self._remaining_predecessors = dict(self._graph._dag.in_degree()) # 每个节点还在等多少个前驱
+        if not reuse_plan:
+            self._resolve_cache.clear()
+            self._collective_info_cache.clear()
+            self._base_times_cache.clear()
+        self._remaining_predecessors = {
+            kernel: sum(pred not in skipped for pred in self._graph._dag.predecessors(kernel))
+            for kernel in self._graph._dag}
         self._ready_time = defaultdict(float)
 
         # ── Memory tracking init ────────────────────────────────────
@@ -255,6 +263,8 @@ class Simulator:
         # 统计输出引用
         for kernel in self._graph.kernels:
             for edge in self._graph._out_edges(kernel):
+                if edge.dst in skipped:
+                    continue
                 for out_name in edge.mapping:
                     t = kernel.outputs[out_name]
                     for real_t in self._passthrough.get(t, [t]):
@@ -263,6 +273,8 @@ class Simulator:
         _seen_wid = set()
         # 遍历权重并去重
         for kernel in self._graph.kernels:
+            if kernel in skipped:
+                continue
             for t in kernel.weights.values():
                 mem = self._placement.get_tensor_memory(t)
                 if mem is None:
@@ -287,6 +299,22 @@ class Simulator:
                 if inputs_for_kernel:
                     self._root_inputs[kernel] = inputs_for_kernel
 
+        # Outputs of skipped initialization kernels are persistent allocations
+        # supplied by the previous decode step, not reloaded or copied.
+        persistent = set()
+        for kernel in skipped:
+            for edge in self._graph._out_edges(kernel):
+                if edge.dst in skipped:
+                    continue
+                for out_name in edge.mapping:
+                    tensor = kernel.outputs[out_name]
+                    persistent.update(self._passthrough.get(tensor, [tensor]))
+        for tensor in persistent:
+            memory = self._placement.get_tensor_memory(tensor)
+            if memory is not None:
+                self._mem_usage[memory] += tensor.size_bytes
+                self._alive[memory].add((tensor, "output"))
+
         for mem, usage in self._mem_usage.items():
             self._mem_peak[mem] = usage
             self._check_oom(mem, None)
@@ -294,7 +322,7 @@ class Simulator:
         # ── Schedule root kernels ───────────────────────────────────
         # 把没有任何前驱的节点加入初始事件队列
         for kernel in self._graph.topological_sort():
-            if self._remaining_predecessors[kernel] == 0:
+            if kernel not in skipped and self._remaining_predecessors[kernel] == 0:
                 dev, stream, _, _ = self._resolve(kernel)
                 self._push(0.0, "start", kernel, dev, stream)
 
@@ -364,7 +392,7 @@ class Simulator:
 
         total = max(self._kernel_end.values()) if self._kernel_end else 0.0
         measurement_start_us = 0.0
-        if self._measurement_start is not None:
+        if self._measurement_start is not None and self._measurement_start not in skipped:
             starts = [entry.start_us for entry in self._trace
                       if entry.kernel is self._measurement_start]
             if not starts:
@@ -486,6 +514,29 @@ class Simulator:
         """Map comm/structural identity outputs to upstream storage tensors."""
         pt: Dict[Tensor, list] = {}
         for kernel in self._graph.topological_sort():
+            aliases = getattr(kernel, "inplace_aliases", {})
+            if aliases:
+                input_sources = {}
+                for edge in self._graph._in_edges(kernel):
+                    for output_name, input_name in edge.mapping.items():
+                        upstream_t = edge.src.outputs[output_name]
+                        input_sources.setdefault(input_name, []).extend(
+                            pt.get(upstream_t, [upstream_t]))
+                for output_name, input_name in aliases.items():
+                    if output_name not in kernel.outputs:
+                        raise ValueError(
+                            f"in-place alias output {output_name!r} is missing")
+                    if input_name not in kernel.inputs:
+                        raise ValueError(
+                            f"in-place alias input {input_name!r} is missing")
+                    output_t = kernel.outputs[output_name]
+                    sources = input_sources.get(
+                        input_name, [kernel.inputs[input_name]])
+                    if len({id(t) for t in sources}) != 1:
+                        raise ValueError(
+                            "in-place alias input must resolve to one storage tensor")
+                    pt[output_t] = sources
+                continue
             if kernel._requires_placement:
                 continue
             all_sources = []
@@ -587,7 +638,10 @@ class Simulator:
             p.advance_to(now)
 
     def _resched_peers(self, rk: RunningKernel):
-        for p in self._affected_peers(rk) - {rk}:
+        # Event IDs break equal-time ties. Object-hash set order must not
+        # choose a different stream schedule when the same graph is reused.
+        for p in sorted(self._affected_peers(rk) - {rk},
+                        key=lambda peer: (peer.device.name, peer.stream)):
             self._schedule_end(p)
 
     # ── Resolution helpers ──────────────────────────────────────────
@@ -692,6 +746,27 @@ class Simulator:
 
     def _base_times(self, kernel: Kernel, device: Compute,
                     participants: List[Compute]):
+        if not self._reuse_times:
+            return self._calculate_base_times(kernel, device, participants)
+        cached = self._base_times_cache.get(kernel)
+        if cached is None:
+            cached = self._calculate_base_times(kernel, device, participants)
+            self._base_times_cache[kernel] = cached
+        return cached
+
+    def invalidate_kernels(self, kernels):
+        """Invalidate costs/placement only for explicitly changed kernels.
+
+        Used by the DCP controller after updating local dynamic parameters.
+        Graph and placement changes by other callers should use run()'s
+        default fresh-plan mode.
+        """
+        for kernel in kernels:
+            self._base_times_cache.pop(kernel, None)
+            self._resolve_cache.pop(kernel, None)
+
+    def _calculate_base_times(self, kernel: Kernel, device: Compute,
+                              participants: List[Compute]):
         ct = self.compute_time_us(kernel, device)
 
         mt = 0.0
@@ -729,26 +804,27 @@ class Simulator:
                             link_data[key][0] += size_bytes
                         else:
                             link_data[key] = [size_bytes, bw_gbs]
-            for t in kernel.outputs.values():
+            for port, t in kernel.outputs.items():
                 mem = self._placement.get_tensor_memory(t) or local_mem
+                size_bytes = t.size_bytes * kernel.output_write_fraction(port)
                 if mem is local_mem:
                     fab = self._hardware.find_fabric(device, mem)
                     bw = fab.src_to_dst_bandwidth_gbs * 1e3
-                    if t.size_bytes > 0 and bw <= 0:
+                    if size_bytes > 0 and bw <= 0:
                         raise ValueError(
                             f"Zero write bandwidth on fabric '{fab.name}' "
-                            f"for tensor with {t.size_bytes} bytes")
+                            f"for tensor with {size_bytes} bytes")
                     if bw > 0:
-                        mt += t.size_bytes / bw
+                        mt += size_bytes / bw
                 else:
                     path = self._hardware.find_fabric_path_directed(device, mem)
                     for edge, direction in path:
                         key = _fabric_key(edge, direction)
                         bw_gbs = _direction_bw(edge, direction)
                         if key in link_data:
-                            link_data[key][0] += t.size_bytes
+                            link_data[key][0] += size_bytes
                         else:
-                            link_data[key] = [t.size_bytes, bw_gbs]
+                            link_data[key] = [size_bytes, bw_gbs]
 
         alpha = 0.0
         if isinstance(kernel, CommKernel) and len(participants) >= 2 \

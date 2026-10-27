@@ -253,6 +253,15 @@ class ComputeGraph:
         for i, c in enumerate(copies):
             for port_name, comm in next_comms.items():
                 self.add_data_edge(c, comm, {port_name: f"i{i}"})
+                extra_inputs = getattr(comm, "split_extra_inputs", {})
+                for extra_name, template in extra_inputs.items():
+                    if extra_name not in c.outputs:
+                        raise ValueError(
+                            f"Split copy of {type(c).__name__} lacks extra "
+                            f"output port '{extra_name}' required by "
+                            f"{type(comm).__name__}")
+                    self.add_data_edge(
+                        c, comm, {extra_name: template.format(i=i)})
 
         # Wire next_comms → successors
         for edge in out_edges:
@@ -479,7 +488,9 @@ class ComputeGraph:
                 for name, t in kernel.inputs.items()
             )
             tensor_w = sum(t.size_bytes for t in kernel.weights.values())
-            tensor_out = sum(t.size_bytes for t in kernel.outputs.values())
+            tensor_out = sum(
+                t.size_bytes * kernel.output_write_fraction(name)
+                for name, t in kernel.outputs.items())
             if kernel.inputs and kernel.input_tensor_bytes != tensor_in:
                 raise ValueError(
                     f"{type(kernel).__name__}: input_tensor_bytes property "

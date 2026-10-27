@@ -52,14 +52,15 @@ import math
 import multiprocessing
 import os
 import time
-from collections import deque
+from collections import defaultdict, deque
 from concurrent.futures import FIRST_COMPLETED, ProcessPoolExecutor, wait
 from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Iterable, Iterator, Sequence
 
 from rooflang.language.hardware.component import Compute, Memory
-from rooflang.language.kernels.forward import Nop, Sampling
+from rooflang.language.kernels.comm import CommKernel
+from rooflang.language.kernels.forward import DpskV4SparseAttn, Nop, Sampling
 from rooflang.programs.models import MODEL_NAMES, load_model
 from rooflang.programs.presets.ascend950dt import Ascend950DTCluster
 from rooflang.programs.presets.b300 import B300Cluster
@@ -557,7 +558,99 @@ def _gpu_timing_metrics(
     }
 
 
-def run_case(case: Case) -> dict:
+def _layer_cost_metrics(graph, layers, placement, result):
+    """Attribute simulated work to layers without changing cost accounting."""
+    core_kernels = {}
+    for layer_id, layer in enumerate(layers):
+        kernels = set(layer.experts)
+        for group in getattr(layer, "_decode_copies", {}).values():
+            for copies in group.values():
+                kernels.update(copies)
+        core_kernels[layer_id] = kernels
+
+    kernel_layer = {
+        kernel: layer_id
+        for layer_id, kernels in core_kernels.items()
+        for kernel in kernels
+    }
+    comm_layer = {}
+    for kernel in graph.kernels:
+        if not isinstance(kernel, CommKernel):
+            continue
+        predecessor_layers = {
+            kernel_layer[edge.src] for edge in graph._in_edges(kernel)
+            if edge.src in kernel_layer
+        }
+        successor_layers = {
+            kernel_layer[edge.dst] for edge in graph._out_edges(kernel)
+            if edge.dst in kernel_layer
+        }
+        if len(predecessor_layers) == 1 and len(successor_layers) <= 1:
+            comm_layer[kernel] = next(iter(predecessor_layers))
+        elif not predecessor_layers and len(successor_layers) == 1:
+            comm_layer[kernel] = next(iter(successor_layers))
+
+    layout_bytes = {}
+    metadata = getattr(placement, "metadata", {}) or {}
+    for layout in metadata.get("layer_kv_layouts", []):
+        layer_id = layout["layer"]
+        layout_bytes[layer_id] = (
+            layout_bytes.get(layer_id, 0) + layout["bytes_per_replica"])
+
+    comm_bytes = defaultdict(float)
+    for kernel, layer_id in comm_layer.items():
+        comm_bytes[layer_id] += kernel.transferred_bytes
+    trace_totals = defaultdict(lambda: {
+        "start": math.inf, "end": -math.inf,
+        "local_elapsed_us": 0.0, "communication_network_us": 0.0,
+    })
+    for entry in result.trace:
+        layer_id = kernel_layer.get(entry.kernel)
+        if layer_id is None:
+            layer_id = comm_layer.get(entry.kernel)
+        if layer_id is None:
+            continue
+        totals = trace_totals[layer_id]
+        totals["start"] = min(totals["start"], entry.start_us)
+        totals["end"] = max(totals["end"], entry.end_us)
+        totals["local_elapsed_us"] += max(
+            0.0, entry.local_elapsed_time_us)
+        if entry.kernel in comm_layer:
+            totals["communication_network_us"] += max(
+                0.0, entry.network_elapsed_time_us)
+
+    rows = []
+    for layer_id, kernels in core_kernels.items():
+        totals = trace_totals.get(layer_id)
+        resident_tensors = set()
+        for kernel in kernels:
+            resident_tensors.update(kernel.weights.values())
+        rows.append({
+            "layer": layer_id,
+            "cp": metadata.get("cp"),
+            "kernel_count": len(kernels),
+            "attention_flops": sum(
+                kernel.flops for kernel in kernels
+                if isinstance(kernel, DpskV4SparseAttn)),
+            "flops": sum(kernel.flops for kernel in kernels),
+            "communication_bytes": comm_bytes[layer_id],
+            "communication_network_us": (
+                totals["communication_network_us"] if totals else 0.0),
+            "local_elapsed_us": (
+                totals["local_elapsed_us"] if totals else 0.0),
+            "span_us": (
+                totals["end"] - totals["start"] if totals else 0.0),
+            "weight_bytes": sum(
+                tensor.size_bytes for tensor in resident_tensors),
+            "kv_cache_bytes": layout_bytes.get(layer_id, 0),
+        })
+    return rows
+
+
+def run_case(
+    case: Case, *, graph_strategy=None,
+    collect_layer_metrics=False, dcp_enabled=False,
+) -> dict:
     """Build, optimize, and simulate one point.  Runs inside a worker."""
     started = time.perf_counter()
     stage, seq_prefill = WORKLOADS[case.workload]
@@ -569,6 +662,9 @@ def run_case(case: Case) -> dict:
         "seq_prefill": seq_prefill,
         "pid": os.getpid(),
     }
+    if graph_strategy is not None:
+        record["graph_strategy"] = graph_strategy
+    record["dcp_enabled"] = bool(dcp_enabled)
     try:
         hardware = build_hardware(case.hardware, case.n_gpus)
         graph, layers, emb, read_input, kv_reads, output_head = declare_model(
@@ -589,9 +685,17 @@ def run_case(case: Case) -> dict:
                 **kwargs,
             )
         else:
+            decode_kwargs = dict(kwargs)
+            if graph_strategy is not None:
+                decode_kwargs["graph_strategy"] = graph_strategy
+            if _MODEL_NAME == "dsv4_flash":
+                decode_kwargs["dcp_enabled"] = dcp_enabled
+            elif dcp_enabled:
+                raise ValueError(
+                    "dcp_enabled is only supported for dsv4_flash")
             graph, placement = optimize_model_cluster_decode(
                 graph, layers, hardware, emb, read_input, kv_reads,
-                output_head, seq_prefill=seq_prefill, **kwargs,
+                output_head, seq_prefill=seq_prefill, **decode_kwargs,
             )
 
         result = Simulator(
@@ -654,6 +758,12 @@ def run_case(case: Case) -> dict:
         record.update(_gpu_timing_metrics(
             result, total_tokens, tokens_per_user, case.n_gpus, output_path,
             duration_us, stage_devices))
+        metadata = getattr(placement, "metadata", None)
+        if metadata is not None:
+            record["placement_metadata"] = metadata
+        if collect_layer_metrics and stage == "decode":
+            record["layer_metrics"] = _layer_cost_metrics(
+                graph, layers, placement, result)
     except OOMError as error:
         record.update({
             "status": "oom",
@@ -779,7 +889,7 @@ def _write_csv(path: Path, records: Sequence[dict]) -> None:
 
 
 def _point_label(point: dict) -> str:
-    """Return the batch size and parallelism settings for a frontier point."""
+    """Return the timing projection and parallelism settings for a point."""
     timing = point.get("_plot_timing", "")
     timing_label = f"{timing} " if timing else ""
     return (
@@ -902,7 +1012,8 @@ def write_outputs(
         figure, axes = plt.subplots(
             rows, columns,
             figsize=(6 * columns + (4.2 if point_labels else 0), figure_height),
-            squeeze=False, sharex=True, sharey=True)
+            squeeze=False,
+            sharex=True, sharey=True)
         flat_axes = list(axes.flat)
         legend_handles = {}
         point_settings = []

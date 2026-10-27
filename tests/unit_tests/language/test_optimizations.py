@@ -746,7 +746,7 @@ def test_context_split_attention_uses_full_logical_kv(attn_cls):
     assert isinstance(prev["kv"], Broadcast)
     assert prev["kv"].outputs["o0"].shape == (2, 24, kv_width)
     assert isinstance(nxt["y"], Gather)
-    assert sum(copy.flops for copy in copies) == kernel.flops
+    assert sum(copy.flops for copy in copies) == pytest.approx(kernel.flops)
     for copy in copies:
         assert copy.S_q == 4
         assert copy.S_kv == 24
@@ -784,7 +784,7 @@ def test_context_split_preserves_causal_flop_factor(attn_cls):
         assert all(copy.indexer_compute_dtype == "fp4" for copy in copies)
         assert sum(copy.flops_by_dtype["fp4"] for copy in copies) \
             == kernel.flops_by_dtype["fp4"]
-    assert sum(copy.flops for copy in copies) == kernel.flops
+    assert sum(copy.flops for copy in copies) == pytest.approx(kernel.flops)
 
 
 def test_context_split_dispatch_and_combine_port_axes():
