@@ -779,8 +779,13 @@ def _write_csv(path: Path, records: Sequence[dict]) -> None:
 
 
 def _point_label(point: dict) -> str:
-    """Return the expert-parallel degree for a frontier point."""
-    return f"EP={point['ep']}"
+    """Return the batch size and parallelism settings for a frontier point."""
+    timing = point.get("_plot_timing", "")
+    timing_label = f"{timing} " if timing else ""
+    return (
+        f"{timing_label}B{point['batch_size']} "
+        f"CP{point['cp']}/DP{point['dp']}/EP{point['ep']}/PP{point['pp']}"
+    )
 
 
 def _shared_axis_limits(
@@ -890,11 +895,22 @@ def write_outputs(
         x_limits, y_limits = _shared_axis_limits(
             frontiers, workload, gpu_counts, hardware_names,
             _PLOT_USER_METRIC, _PLOT_GPU_METRIC, axis_scale)
+        n_frontier_points = sum(
+            len(frontiers.get((workload, hardware, n_gpus), []))
+            for n_gpus in gpu_counts for hardware in hardware_names)
+        figure_height = max(5 * rows, 0.22 * n_frontier_points + 1.5)
         figure, axes = plt.subplots(
-            rows, columns, figsize=(6 * columns, 5 * rows), squeeze=False,
-            sharex=True, sharey=True)
+            rows, columns,
+            figsize=(6 * columns + (4.2 if point_labels else 0), figure_height),
+            squeeze=False, sharex=True, sharey=True)
         flat_axes = list(axes.flat)
         legend_handles = {}
+        point_settings = []
+        point_index = 0
+        label_offsets = [
+            (8, -10), (8, -22), (8, -34), (8, -46), (8, -58),
+            (-20, -10), (-20, -22), (-20, -34), (-20, -46), (-20, -58),
+        ]
         for axis, n_gpus in zip(flat_axes, gpu_counts):
             for hardware in hardware_names:
                 points = frontiers.get((workload, hardware, n_gpus), [])
@@ -915,13 +931,26 @@ def write_outputs(
                 if point_labels:
                     for point, user_value, gpu_value in zip(
                             points, user_values, gpu_values):
+                        point_index += 1
+                        label_offset = (
+                            label_offsets[point_index - 1]
+                            if point_index <= 7 else (5, 5)
+                        )
                         axis.annotate(
-                            _point_label(point),
+                            f"#{point_index}",
                             (user_value, gpu_value),
-                            xytext=(3, 3),
+                            xytext=label_offset,
                             textcoords="offset points",
-                            fontsize=6,
+                            arrowprops={"arrowstyle": "-", "color": "0.45",
+                                        "linewidth": 0.5, "shrinkA": 1, "shrinkB": 1},
+                            fontsize=7,
+                            bbox={"boxstyle": "round,pad=0.15", "facecolor": "white",
+                                  "edgecolor": "none", "alpha": 0.85},
                             alpha=0.85,
+                        )
+                        point_settings.append(
+                            f"#{point_index} {n_gpus}G {hardware}: "
+                            f"{_point_label(point)}"
                         )
             axis.set_title(f"{n_gpus} GPUs")
             if axis_scale == "log":
@@ -962,9 +991,17 @@ def write_outputs(
                 ncol=legend_columns,
             )
             bottom_margin = 0.08 + 0.04 * (legend_rows - 1)
+        plot_right = 1.0
+        if point_labels:
+            plot_right = (6 * columns) / (6 * columns + 4.2)
+            figure.text(
+                plot_right + 0.018, 0.92,
+                "Pareto point settings\n" + "\n".join(point_settings),
+                ha="left", va="top", family="monospace", fontsize=7,
+            )
         figure.suptitle(
             f"{model} Pareto Frontier: {workload}")
-        figure.tight_layout(rect=(0, bottom_margin, 1, 0.96))
+        figure.tight_layout(rect=(0, bottom_margin, plot_right, 0.96))
         figure.savefig(
             output_dir / f"pareto_{workload}.png", dpi=160)
         plt.close(figure)
