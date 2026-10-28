@@ -14,3 +14,4 @@ results/
 tests/
 tools/
 agents/find_pareto_frontier/agent.env
+/runs/

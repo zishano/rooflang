@@ -59,6 +59,8 @@ def test_workloads_include_intermediate_context_lengths():
     assert finder.WORKLOADS == {
         "prefill-8k": ("prefill", 8192),
         "decode-8k": ("decode", 8192),
+        "prefill-16k": ("prefill", 16384),
+        "decode-16k": ("decode", 16384),
         "prefill-64k": ("prefill", 65536),
         "decode-64k": ("decode", 65536),
         "prefill-256k": ("prefill", 262144),

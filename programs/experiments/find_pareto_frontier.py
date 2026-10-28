@@ -93,8 +93,14 @@ def _select_model(name):
 WORKLOADS = {
     "prefill-8k": ("prefill", 8192),
     "decode-8k": ("decode", 8192),
+    "prefill-16k": ("prefill", 16384),
+    "decode-16k": ("decode", 16384),
+    "prefill-32k": ("prefill", 32768),
+    "decode-32k": ("decode", 32768),
     "prefill-64k": ("prefill", 65536),
     "decode-64k": ("decode", 65536),
+    "prefill-128k": ("prefill", 131072),
+    "decode-128k": ("decode", 131072),
     "prefill-256k": ("prefill", 262144),
     "decode-256k": ("decode", 262144),
     "prefill-1m": ("prefill", 1048576),
@@ -847,11 +853,20 @@ def write_outputs(
     model: str,
     point_labels: bool = False,
     axis_scale: str = "linear",
+    fixed_batch_size: int | None = None,
 ) -> None:
     """Write all points, the final frontier CSV, and frontier plots."""
     output_dir.mkdir(parents=True, exist_ok=True)
     _write_csv(output_dir / "all_points.csv", records)
     frontiers = _combined_plot_frontiers(records)
+    candidates = {}
+    if fixed_batch_size is not None:
+        for record in records:
+            if (record.get("status") != "ok"
+                    or not record.get("memory_feasible_overlapped", False)):
+                continue
+            key = (record["workload"], record["hardware"], record["n_gpus"])
+            candidates.setdefault(key, []).append(record)
     frontier_records = [
         point for group in frontiers.values() for point in group
     ]
@@ -893,7 +908,13 @@ def write_outputs(
     columns = math.ceil(len(gpu_counts) / rows)
     for workload in workloads:
         x_limits, y_limits = _shared_axis_limits(
-            frontiers, workload, gpu_counts, hardware_names,
+            {key: points + [
+                {**point,
+                 _PLOT_USER_METRIC: point["tokens_per_s_user_overlapped"],
+                 _PLOT_GPU_METRIC: point["tokens_per_s_gpu_overlapped"]}
+                for point in candidates.get(key, [])]
+             for key, points in frontiers.items()},
+            workload, gpu_counts, hardware_names,
             _PLOT_USER_METRIC, _PLOT_GPU_METRIC, axis_scale)
         n_frontier_points = sum(
             len(frontiers.get((workload, hardware, n_gpus), []))
@@ -913,6 +934,15 @@ def write_outputs(
         ]
         for axis, n_gpus in zip(flat_axes, gpu_counts):
             for hardware in hardware_names:
+                if fixed_batch_size is not None:
+                    other_points = candidates.get(
+                        (workload, hardware, n_gpus), [])
+                    axis.scatter(
+                        [point["tokens_per_s_user_overlapped"]
+                         for point in other_points],
+                        [point["tokens_per_s_gpu_overlapped"]
+                         for point in other_points],
+                        color="0.7", s=18, zorder=1)
                 points = frontiers.get((workload, hardware, n_gpus), [])
                 if not points:
                     continue
@@ -1000,7 +1030,9 @@ def write_outputs(
                 ha="left", va="top", family="monospace", fontsize=7,
             )
         figure.suptitle(
-            f"{model} Pareto Frontier: {workload}")
+            f"{model} Pareto Frontier: {workload}"
+            + (f", batch={fixed_batch_size}"
+               if fixed_batch_size is not None else ""))
         figure.tight_layout(rect=(0, bottom_margin, plot_right, 0.96))
         figure.savefig(
             output_dir / f"pareto_{workload}.png", dpi=160)
@@ -1159,6 +1191,10 @@ def _parser() -> argparse.ArgumentParser:
         help="Only regenerate CSV and plots from raw_results.jsonl",
     )
     parser.add_argument(
+        "--plot-batch-sizes", nargs="+", type=int,
+        help="Also write separate Pareto CSVs and plots for these exact batch sizes",
+    )
+    parser.add_argument(
         "--dry-run", action="store_true",
         help="Print the generated case count without running simulations",
     )
@@ -1186,6 +1222,30 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.batch_multipliers is not None and any(
             multiplier <= 0 for multiplier in args.batch_multipliers):
         raise ValueError("--batch-multipliers must be positive")
+    if args.plot_batch_sizes is not None and any(
+            batch_size <= 0 for batch_size in args.plot_batch_sizes):
+        raise ValueError("--plot-batch-sizes must be positive")
+
+    def write_requested_outputs(records: Sequence[dict]) -> None:
+        write_outputs(
+            args.output_dir, records, args.model,
+            point_labels=args.point_labels,
+            axis_scale=args.axis_scale)
+        for batch_size in sorted(set(args.plot_batch_sizes or [])):
+            batch_records = [
+                record for record in records
+                if record.get("batch_size") == batch_size
+            ]
+            if not batch_records:
+                raise ValueError(
+                    f"No batch size {batch_size} records in "
+                    f"{args.output_dir / 'raw_results.jsonl'}")
+            write_outputs(
+                args.output_dir / f"batch_{batch_size}",
+                batch_records, args.model,
+                point_labels=args.point_labels,
+                axis_scale=args.axis_scale,
+                fixed_batch_size=batch_size)
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
     raw_path = args.output_dir / "raw_results.jsonl"
@@ -1196,10 +1256,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.plot_only:
         if not existing:
             raise ValueError(f"No records found in {raw_path}")
-        write_outputs(
-            args.output_dir, existing, args.model,
-            point_labels=args.point_labels,
-            axis_scale=args.axis_scale)
+        write_requested_outputs(existing)
         return 0
 
     cases = list(enumerate_cases(
@@ -1262,10 +1319,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         baseline_oom_cutoffs, grow_batches)
     records = existing + new_records
     if not args.no_plot:
-        write_outputs(
-            args.output_dir, records, args.model,
-            point_labels=args.point_labels,
-            axis_scale=args.axis_scale)
+        write_requested_outputs(records)
     return 0
 
 
