@@ -4,6 +4,7 @@
 # PP 使用均匀层数划分；这是当前搜索器的采样范围，不是所有架构的穷举。
 # 同目录结果自动续跑。WORKERS=1 可降低主机资源占用；追加 --dry-run 查看规模。
 # 从已有结果单独绘制固定 batch：追加 --plot-only --plot-batch-sizes 256 512。
+# 从已有结果重绘各 CP 曲线：追加 --plot-only；默认叠加 CP1/2/4/8。
 set -euo pipefail
 
 script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
@@ -30,4 +31,5 @@ exec "$python_bin" -m rooflang.programs.experiments.find_pareto_frontier \
   --workers "${WORKERS:-2}" \
   --output-dir results/kimi_k3_gb300_8gpu_decode \
   --point-labels \
+  --plot-cp-degrees 1 2 4 8 \
   "$@"

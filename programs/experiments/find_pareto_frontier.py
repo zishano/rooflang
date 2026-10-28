@@ -754,6 +754,18 @@ def _combined_plot_frontiers(
     }
 
 
+def _cp_plot_frontiers(
+    records: Sequence[dict], cp_degrees: Sequence[int],
+) -> dict[tuple, list[dict]]:
+    """Compute a separate multi-batch frontier for each CP degree."""
+    frontiers = {}
+    for cp in cp_degrees:
+        cp_records = [record for record in records if record.get("cp") == cp]
+        for key, points in _combined_plot_frontiers(cp_records).items():
+            frontiers[(*key, cp)] = points
+    return frontiers
+
+
 def _read_jsonl(path: Path) -> list[dict]:
     if not path.exists():
         return []
@@ -1039,6 +1051,94 @@ def write_outputs(
         plt.close(figure)
 
 
+def write_cp_comparison_outputs(
+    output_dir: Path,
+    records: Sequence[dict],
+    model: str,
+    cp_degrees: Sequence[int],
+    axis_scale: str = "linear",
+    point_labels: bool = False,
+) -> None:
+    """Plot one multi-batch Pareto curve per CP degree on shared axes."""
+    output_dir.mkdir(parents=True, exist_ok=True)
+    cp_degrees = tuple(dict.fromkeys(cp_degrees))
+    frontiers = _cp_plot_frontiers(records, cp_degrees)
+    _write_csv(
+        output_dir / "pareto_by_cp_frontier.csv",
+        [point for points in frontiers.values() for point in points],
+    )
+    if not frontiers:
+        return
+
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.ticker import FuncFormatter
+
+    groups = sorted({key[:3] for key in frontiers})
+    for workload, hardware, n_gpus in groups:
+        key = (workload, hardware, n_gpus)
+        all_points = [
+            point for cp in cp_degrees
+            for point in frontiers.get((*key, cp), [])
+        ]
+        x_limits, y_limits = _shared_axis_limits(
+            {key: all_points}, workload, [n_gpus], [hardware],
+            _PLOT_USER_METRIC, _PLOT_GPU_METRIC, axis_scale)
+        figure, axis = plt.subplots(figsize=(9, 6))
+        labeled_batches = set()
+        markers = ("o", "s", "^", "D")
+        line_styles = ("-", "--", "-.", ":")
+        for index, cp in enumerate(cp_degrees):
+            points = frontiers.get((*key, cp), [])
+            if not points:
+                continue
+            axis.plot(
+                [point[_PLOT_USER_METRIC] for point in points],
+                [point[_PLOT_GPU_METRIC] for point in points],
+                color=f"C{index}", marker=markers[index % len(markers)],
+                markersize=max(4, 11 - 2 * index),
+                linestyle=line_styles[index % len(line_styles)],
+                linewidth=1.5, alpha=0.85,
+                label=f"CP{cp}",
+            )
+            if point_labels:
+                for point in points:
+                    if point["batch_size"] in labeled_batches:
+                        continue
+                    labeled_batches.add(point["batch_size"])
+                    axis.annotate(
+                        f"B{point['batch_size']}",
+                        (point[_PLOT_USER_METRIC], point[_PLOT_GPU_METRIC]),
+                        xytext=(4, 4), textcoords="offset points",
+                        fontsize=7, color=f"C{index}",
+                    )
+        if axis_scale == "log":
+            axis.set_xscale("log", base=2)
+            axis.set_yscale("log", base=2)
+            unit_base = 1024
+        else:
+            unit_base = 1000
+        formatter = FuncFormatter(
+            lambda value, position: _plain_tick_label(
+                value, position, unit_base))
+        axis.xaxis.set_major_formatter(formatter)
+        axis.yaxis.set_major_formatter(formatter)
+        axis.set_xlim(x_limits)
+        axis.set_ylim(y_limits)
+        axis.set_xlabel("tokens/s/user")
+        axis.set_ylabel("tokens/s/GPU")
+        axis.set_title(f"{model} Pareto by CP: {workload}, {hardware}, {n_gpus} GPUs")
+        axis.grid(True, which="major", alpha=0.25)
+        axis.legend(title="Context parallelism")
+        figure.tight_layout()
+        figure.savefig(
+            output_dir / f"pareto_by_cp_{workload}_{hardware}_{n_gpus}gpu.png",
+            dpi=160,
+        )
+        plt.close(figure)
+
+
 def _pending_sweeps(
     cases: Iterable[Case],
     completed_ids: set[str],
@@ -1195,6 +1295,10 @@ def _parser() -> argparse.ArgumentParser:
         help="Also write separate Pareto CSVs and plots for these exact batch sizes",
     )
     parser.add_argument(
+        "--plot-cp-degrees", nargs="+", type=int,
+        help="Also plot separate multi-batch Pareto curves by CP degree",
+    )
+    parser.add_argument(
         "--dry-run", action="store_true",
         help="Print the generated case count without running simulations",
     )
@@ -1225,12 +1329,20 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.plot_batch_sizes is not None and any(
             batch_size <= 0 for batch_size in args.plot_batch_sizes):
         raise ValueError("--plot-batch-sizes must be positive")
+    if args.plot_cp_degrees is not None and any(
+            cp <= 0 for cp in args.plot_cp_degrees):
+        raise ValueError("--plot-cp-degrees must be positive")
 
     def write_requested_outputs(records: Sequence[dict]) -> None:
         write_outputs(
             args.output_dir, records, args.model,
             point_labels=args.point_labels,
             axis_scale=args.axis_scale)
+        if args.plot_cp_degrees:
+            write_cp_comparison_outputs(
+                args.output_dir, records, args.model,
+                args.plot_cp_degrees, axis_scale=args.axis_scale,
+                point_labels=args.point_labels)
         for batch_size in sorted(set(args.plot_batch_sizes or [])):
             batch_records = [
                 record for record in records

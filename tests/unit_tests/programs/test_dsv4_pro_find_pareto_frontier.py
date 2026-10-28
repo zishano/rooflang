@@ -664,6 +664,33 @@ def test_combined_plot_frontiers_exclude_infeasible_projection():
         "original", "overlapped"]
 
 
+def test_cp_plot_frontiers_keep_each_cp_curve_across_batches():
+    records = []
+    for cp, batch, user, gpu in (
+        (1, 8, 10.0, 10.0), (1, 16, 8.0, 18.0),
+        (2, 8, 12.0, 12.0), (2, 16, 9.0, 20.0),
+    ):
+        records.append({
+            "case_id": f"cp{cp}-b{batch}", "status": "ok",
+            "workload": "decode-8k", "hardware": "gb300", "n_gpus": 8,
+            "cp": cp, "batch_size": batch,
+            "tokens_per_s_user": user, "tokens_per_s_gpu": gpu,
+            "tokens_per_s_user_elapsed": user,
+            "tokens_per_s_gpu_elapsed": gpu,
+            "tokens_per_s_user_overlapped": user,
+            "tokens_per_s_gpu_overlapped": gpu,
+            "memory_feasible_elapsed": True,
+            "memory_feasible_overlapped": True,
+        })
+
+    frontiers = finder._cp_plot_frontiers(records, [1, 2, 4, 8])
+
+    assert {cp: {point["batch_size"] for point in frontiers[
+        ("decode-8k", "gb300", 8, cp)]} for cp in (1, 2)} == {
+            1: {8, 16}, 2: {8, 16}}
+    assert not any(key[-1] in (4, 8) for key in frontiers)
+
+
 def test_read_jsonl_handles_missing_blank_valid_and_invalid(tmp_path):
     path = tmp_path / "records.jsonl"
     assert _read_jsonl(path) == []
