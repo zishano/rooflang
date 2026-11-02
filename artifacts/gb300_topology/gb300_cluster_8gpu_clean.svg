@@ -1,0 +1,198 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="980" viewBox="0 0 1900 980">
+<defs>
+  <marker id="arrow" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 z" fill="context-stroke"/></marker>
+  <style>
+    text { font-family: "Noto Sans CJK SC", "Microsoft YaHei", Arial, sans-serif; fill:#172033; }
+    .title { font-size:25px; font-weight:700; } .subtitle { font-size:15px; fill:#475569; }
+    .group { font-size:17px; font-weight:700; } .node { font-size:13px; font-weight:600; }
+    .small { font-size:11px; font-weight:400; } .legend { font-size:12px; }
+    .bi { fill:none; stroke-width:2; }
+  </style>
+</defs>
+<rect width="100%" height="100%" fill="white"/>
+<text x="950" y="40" text-anchor="middle" class="title">GB300Cluster（nvl_scope=8）：单节点完整拓扑与跨节点互联</text>
+<text x="950" y="66" text-anchor="middle" class="subtitle">严格按 programs/presets/gb300.py 建模；同类设备逐一展开</text>
+<rect x="20" y="90" width="1860" height="660" rx="16" fill="#fbfdff" stroke="#94a3b8" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="950" y="116" text-anchor="middle" class="group">节点 n0：8-GPU NVLink 域</text>
+<rect x="40" y="175" width="900" height="555" rx="13" fill="#f8fbff" stroke="#93c5fd" stroke-width="2"/>
+<rect x="960" y="175" width="900" height="555" rx="13" fill="#f8fbff" stroke="#93c5fd" stroke-width="2"/>
+<text x="490" y="202" text-anchor="middle" class="group">Compute Tray 0：GPU 0–3</text>
+<text x="1410" y="202" text-anchor="middle" class="group">Compute Tray 1：GPU 4–7</text>
+
+<path d="M950,165 V205 H150 H1730" fill="none" stroke="#2563eb" stroke-width="2"/>
+<path d="M150,205 V235" fill="none" stroke="#2563eb" stroke-width="2"/>
+<path d="M150,285 L150,320" class="bi" stroke="#16a34a" stroke-width="2"/>
+<path d="M225,260 H240 V674 H225" class="bi" stroke="#0891b2"/>
+<path d="M370,205 V235" fill="none" stroke="#2563eb" stroke-width="2"/>
+<path d="M370,285 L370,320" class="bi" stroke="#16a34a" stroke-width="2"/>
+<path d="M445,260 H460 V674 H445" class="bi" stroke="#0891b2"/>
+<path d="M590,205 V235" fill="none" stroke="#2563eb" stroke-width="2"/>
+<path d="M590,285 L590,320" class="bi" stroke="#16a34a" stroke-width="2"/>
+<path d="M665,260 H680 V674 H665" class="bi" stroke="#0891b2"/>
+<path d="M810,205 V235" fill="none" stroke="#2563eb" stroke-width="2"/>
+<path d="M810,285 L810,320" class="bi" stroke="#16a34a" stroke-width="2"/>
+<path d="M885,260 H900 V674 H885" class="bi" stroke="#0891b2"/>
+<path d="M1070,205 V235" fill="none" stroke="#2563eb" stroke-width="2"/>
+<path d="M1070,285 L1070,320" class="bi" stroke="#16a34a" stroke-width="2"/>
+<path d="M1145,260 H1160 V674 H1145" class="bi" stroke="#0891b2"/>
+<path d="M1290,205 V235" fill="none" stroke="#2563eb" stroke-width="2"/>
+<path d="M1290,285 L1290,320" class="bi" stroke="#16a34a" stroke-width="2"/>
+<path d="M1365,260 H1380 V674 H1365" class="bi" stroke="#0891b2"/>
+<path d="M1510,205 V235" fill="none" stroke="#2563eb" stroke-width="2"/>
+<path d="M1510,285 L1510,320" class="bi" stroke="#16a34a" stroke-width="2"/>
+<path d="M1585,260 H1600 V674 H1585" class="bi" stroke="#0891b2"/>
+<path d="M1730,205 V235" fill="none" stroke="#2563eb" stroke-width="2"/>
+<path d="M1730,285 L1730,320" class="bi" stroke="#16a34a" stroke-width="2"/>
+<path d="M1805,260 H1820 V674 H1805" class="bi" stroke="#0891b2"/>
+<path d="M225,260 V390 H260 V410" class="bi" stroke="#9333ea"/>
+<path d="M295,260 V390 H260" class="bi" stroke="#9333ea"/>
+<path d="M260,458 L260,485" class="bi" stroke="#16a34a" stroke-width="2"/>
+<path d="M185,434 H150 V560" class="bi" stroke="#64748b"/>
+<path d="M335,434 H370 V560" class="bi" stroke="#64748b"/>
+<path d="M665,260 V390 H700 V410" class="bi" stroke="#9333ea"/>
+<path d="M735,260 V390 H700" class="bi" stroke="#9333ea"/>
+<path d="M700,458 L700,485" class="bi" stroke="#16a34a" stroke-width="2"/>
+<path d="M625,434 H590 V560" class="bi" stroke="#64748b"/>
+<path d="M775,434 H810 V560" class="bi" stroke="#64748b"/>
+<path d="M1145,260 V390 H1180 V410" class="bi" stroke="#9333ea"/>
+<path d="M1215,260 V390 H1180" class="bi" stroke="#9333ea"/>
+<path d="M1180,458 L1180,485" class="bi" stroke="#16a34a" stroke-width="2"/>
+<path d="M1105,434 H1070 V560" class="bi" stroke="#64748b"/>
+<path d="M1255,434 H1290 V560" class="bi" stroke="#64748b"/>
+<path d="M1585,260 V390 H1620 V410" class="bi" stroke="#9333ea"/>
+<path d="M1655,260 V390 H1620" class="bi" stroke="#9333ea"/>
+<path d="M1620,458 L1620,485" class="bi" stroke="#16a34a" stroke-width="2"/>
+<path d="M1545,434 H1510 V560" class="bi" stroke="#64748b"/>
+<path d="M1695,434 H1730 V560" class="bi" stroke="#64748b"/>
+<path d="M335,434 L625,434" class="bi" stroke="#a855f7" stroke-width="2"/>
+<path d="M1255,434 L1545,434" class="bi" stroke="#a855f7" stroke-width="2"/>
+<path d="M150,725 H1730" fill="none" stroke="#0e7490" stroke-width="2"/>
+<path d="M150,698 V725" fill="none" stroke="#0e7490" stroke-width="2"/>
+<path d="M370,698 V725" fill="none" stroke="#0e7490" stroke-width="2"/>
+<path d="M590,698 V725" fill="none" stroke="#0e7490" stroke-width="2"/>
+<path d="M810,698 V725" fill="none" stroke="#0e7490" stroke-width="2"/>
+<path d="M1070,698 V725" fill="none" stroke="#0e7490" stroke-width="2"/>
+<path d="M1290,698 V725" fill="none" stroke="#0e7490" stroke-width="2"/>
+<path d="M1510,698 V725" fill="none" stroke="#0e7490" stroke-width="2"/>
+<path d="M1730,698 V725" fill="none" stroke="#0e7490" stroke-width="2"/>
+<path d="M950,725 V790" fill="none" stroke="#0e7490" stroke-width="2"/>
+<rect x="650" y="125" width="600" height="40" rx="7" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+<text x="950.0" y="138.0" text-anchor="middle" dominant-baseline="middle" class="node">逻辑第 5 代 NVSwitch Fabric</text>
+<text x="950.0" y="156.0" text-anchor="middle" dominant-baseline="middle" class="small">节点内全部 GPU 共享</text>
+<rect x="75" y="235" width="150" height="50" rx="7" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+<text x="150.0" y="260.0" text-anchor="middle" dominant-baseline="middle" class="node">GB300 GPU 0</text>
+<rect x="75" y="320" width="150" height="50" rx="7" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+<text x="150.0" y="338.0" text-anchor="middle" dominant-baseline="middle" class="node">HBM3e 0</text>
+<text x="150.0" y="356.0" text-anchor="middle" dominant-baseline="middle" class="small">288 GB</text>
+<rect x="75" y="560" width="150" height="50" rx="7" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5"/>
+<text x="150.0" y="578.0" text-anchor="middle" dominant-baseline="middle" class="node">NVMe SSD 0</text>
+<text x="150.0" y="596.0" text-anchor="middle" dominant-baseline="middle" class="small">256 TB</text>
+<rect x="75" y="650" width="150" height="48" rx="7" fill="#cffafe" stroke="#0891b2" stroke-width="1.5"/>
+<text x="150.0" y="674.0" text-anchor="middle" dominant-baseline="middle" class="node">ConnectX-8 NIC 0</text>
+<rect x="295" y="235" width="150" height="50" rx="7" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+<text x="370.0" y="260.0" text-anchor="middle" dominant-baseline="middle" class="node">GB300 GPU 1</text>
+<rect x="295" y="320" width="150" height="50" rx="7" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+<text x="370.0" y="338.0" text-anchor="middle" dominant-baseline="middle" class="node">HBM3e 1</text>
+<text x="370.0" y="356.0" text-anchor="middle" dominant-baseline="middle" class="small">288 GB</text>
+<rect x="295" y="560" width="150" height="50" rx="7" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5"/>
+<text x="370.0" y="578.0" text-anchor="middle" dominant-baseline="middle" class="node">NVMe SSD 1</text>
+<text x="370.0" y="596.0" text-anchor="middle" dominant-baseline="middle" class="small">256 TB</text>
+<rect x="295" y="650" width="150" height="48" rx="7" fill="#cffafe" stroke="#0891b2" stroke-width="1.5"/>
+<text x="370.0" y="674.0" text-anchor="middle" dominant-baseline="middle" class="node">ConnectX-8 NIC 1</text>
+<rect x="515" y="235" width="150" height="50" rx="7" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+<text x="590.0" y="260.0" text-anchor="middle" dominant-baseline="middle" class="node">GB300 GPU 2</text>
+<rect x="515" y="320" width="150" height="50" rx="7" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+<text x="590.0" y="338.0" text-anchor="middle" dominant-baseline="middle" class="node">HBM3e 2</text>
+<text x="590.0" y="356.0" text-anchor="middle" dominant-baseline="middle" class="small">288 GB</text>
+<rect x="515" y="560" width="150" height="50" rx="7" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5"/>
+<text x="590.0" y="578.0" text-anchor="middle" dominant-baseline="middle" class="node">NVMe SSD 2</text>
+<text x="590.0" y="596.0" text-anchor="middle" dominant-baseline="middle" class="small">256 TB</text>
+<rect x="515" y="650" width="150" height="48" rx="7" fill="#cffafe" stroke="#0891b2" stroke-width="1.5"/>
+<text x="590.0" y="674.0" text-anchor="middle" dominant-baseline="middle" class="node">ConnectX-8 NIC 2</text>
+<rect x="735" y="235" width="150" height="50" rx="7" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+<text x="810.0" y="260.0" text-anchor="middle" dominant-baseline="middle" class="node">GB300 GPU 3</text>
+<rect x="735" y="320" width="150" height="50" rx="7" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+<text x="810.0" y="338.0" text-anchor="middle" dominant-baseline="middle" class="node">HBM3e 3</text>
+<text x="810.0" y="356.0" text-anchor="middle" dominant-baseline="middle" class="small">288 GB</text>
+<rect x="735" y="560" width="150" height="50" rx="7" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5"/>
+<text x="810.0" y="578.0" text-anchor="middle" dominant-baseline="middle" class="node">NVMe SSD 3</text>
+<text x="810.0" y="596.0" text-anchor="middle" dominant-baseline="middle" class="small">256 TB</text>
+<rect x="735" y="650" width="150" height="48" rx="7" fill="#cffafe" stroke="#0891b2" stroke-width="1.5"/>
+<text x="810.0" y="674.0" text-anchor="middle" dominant-baseline="middle" class="node">ConnectX-8 NIC 3</text>
+<rect x="995" y="235" width="150" height="50" rx="7" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+<text x="1070.0" y="260.0" text-anchor="middle" dominant-baseline="middle" class="node">GB300 GPU 4</text>
+<rect x="995" y="320" width="150" height="50" rx="7" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+<text x="1070.0" y="338.0" text-anchor="middle" dominant-baseline="middle" class="node">HBM3e 4</text>
+<text x="1070.0" y="356.0" text-anchor="middle" dominant-baseline="middle" class="small">288 GB</text>
+<rect x="995" y="560" width="150" height="50" rx="7" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5"/>
+<text x="1070.0" y="578.0" text-anchor="middle" dominant-baseline="middle" class="node">NVMe SSD 4</text>
+<text x="1070.0" y="596.0" text-anchor="middle" dominant-baseline="middle" class="small">256 TB</text>
+<rect x="995" y="650" width="150" height="48" rx="7" fill="#cffafe" stroke="#0891b2" stroke-width="1.5"/>
+<text x="1070.0" y="674.0" text-anchor="middle" dominant-baseline="middle" class="node">ConnectX-8 NIC 4</text>
+<rect x="1215" y="235" width="150" height="50" rx="7" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+<text x="1290.0" y="260.0" text-anchor="middle" dominant-baseline="middle" class="node">GB300 GPU 5</text>
+<rect x="1215" y="320" width="150" height="50" rx="7" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+<text x="1290.0" y="338.0" text-anchor="middle" dominant-baseline="middle" class="node">HBM3e 5</text>
+<text x="1290.0" y="356.0" text-anchor="middle" dominant-baseline="middle" class="small">288 GB</text>
+<rect x="1215" y="560" width="150" height="50" rx="7" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5"/>
+<text x="1290.0" y="578.0" text-anchor="middle" dominant-baseline="middle" class="node">NVMe SSD 5</text>
+<text x="1290.0" y="596.0" text-anchor="middle" dominant-baseline="middle" class="small">256 TB</text>
+<rect x="1215" y="650" width="150" height="48" rx="7" fill="#cffafe" stroke="#0891b2" stroke-width="1.5"/>
+<text x="1290.0" y="674.0" text-anchor="middle" dominant-baseline="middle" class="node">ConnectX-8 NIC 5</text>
+<rect x="1435" y="235" width="150" height="50" rx="7" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+<text x="1510.0" y="260.0" text-anchor="middle" dominant-baseline="middle" class="node">GB300 GPU 6</text>
+<rect x="1435" y="320" width="150" height="50" rx="7" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+<text x="1510.0" y="338.0" text-anchor="middle" dominant-baseline="middle" class="node">HBM3e 6</text>
+<text x="1510.0" y="356.0" text-anchor="middle" dominant-baseline="middle" class="small">288 GB</text>
+<rect x="1435" y="560" width="150" height="50" rx="7" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5"/>
+<text x="1510.0" y="578.0" text-anchor="middle" dominant-baseline="middle" class="node">NVMe SSD 6</text>
+<text x="1510.0" y="596.0" text-anchor="middle" dominant-baseline="middle" class="small">256 TB</text>
+<rect x="1435" y="650" width="150" height="48" rx="7" fill="#cffafe" stroke="#0891b2" stroke-width="1.5"/>
+<text x="1510.0" y="674.0" text-anchor="middle" dominant-baseline="middle" class="node">ConnectX-8 NIC 6</text>
+<rect x="1655" y="235" width="150" height="50" rx="7" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+<text x="1730.0" y="260.0" text-anchor="middle" dominant-baseline="middle" class="node">GB300 GPU 7</text>
+<rect x="1655" y="320" width="150" height="50" rx="7" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+<text x="1730.0" y="338.0" text-anchor="middle" dominant-baseline="middle" class="node">HBM3e 7</text>
+<text x="1730.0" y="356.0" text-anchor="middle" dominant-baseline="middle" class="small">288 GB</text>
+<rect x="1655" y="560" width="150" height="50" rx="7" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5"/>
+<text x="1730.0" y="578.0" text-anchor="middle" dominant-baseline="middle" class="node">NVMe SSD 7</text>
+<text x="1730.0" y="596.0" text-anchor="middle" dominant-baseline="middle" class="small">256 TB</text>
+<rect x="1655" y="650" width="150" height="48" rx="7" fill="#cffafe" stroke="#0891b2" stroke-width="1.5"/>
+<text x="1730.0" y="674.0" text-anchor="middle" dominant-baseline="middle" class="node">ConnectX-8 NIC 7</text>
+<rect x="185" y="410" width="150" height="48" rx="7" fill="#f3e8ff" stroke="#9333ea" stroke-width="1.5"/>
+<text x="260.0" y="434.0" text-anchor="middle" dominant-baseline="middle" class="node">Grace CPU 0</text>
+<rect x="185" y="485" width="150" height="48" rx="7" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+<text x="260.0" y="502.0" text-anchor="middle" dominant-baseline="middle" class="node">DRAM 0</text>
+<text x="260.0" y="520.0" text-anchor="middle" dominant-baseline="middle" class="small">480 GB</text>
+<rect x="625" y="410" width="150" height="48" rx="7" fill="#f3e8ff" stroke="#9333ea" stroke-width="1.5"/>
+<text x="700.0" y="434.0" text-anchor="middle" dominant-baseline="middle" class="node">Grace CPU 1</text>
+<rect x="625" y="485" width="150" height="48" rx="7" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+<text x="700.0" y="502.0" text-anchor="middle" dominant-baseline="middle" class="node">DRAM 1</text>
+<text x="700.0" y="520.0" text-anchor="middle" dominant-baseline="middle" class="small">480 GB</text>
+<rect x="1105" y="410" width="150" height="48" rx="7" fill="#f3e8ff" stroke="#9333ea" stroke-width="1.5"/>
+<text x="1180.0" y="434.0" text-anchor="middle" dominant-baseline="middle" class="node">Grace CPU 2</text>
+<rect x="1105" y="485" width="150" height="48" rx="7" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+<text x="1180.0" y="502.0" text-anchor="middle" dominant-baseline="middle" class="node">DRAM 2</text>
+<text x="1180.0" y="520.0" text-anchor="middle" dominant-baseline="middle" class="small">480 GB</text>
+<rect x="1545" y="410" width="150" height="48" rx="7" fill="#f3e8ff" stroke="#9333ea" stroke-width="1.5"/>
+<text x="1620.0" y="434.0" text-anchor="middle" dominant-baseline="middle" class="node">Grace CPU 3</text>
+<rect x="1545" y="485" width="150" height="48" rx="7" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+<text x="1620.0" y="502.0" text-anchor="middle" dominant-baseline="middle" class="node">DRAM 3</text>
+<text x="1620.0" y="520.0" text-anchor="middle" dominant-baseline="middle" class="small">480 GB</text>
+<rect x="665" y="790" width="570" height="50" rx="7" fill="#fef3c7" stroke="#d97706" stroke-width="1.5"/>
+<text x="950.0" y="808.0" text-anchor="middle" dominant-baseline="middle" class="node">全集群共享 InfiniBand Switch</text>
+<text x="950.0" y="826.0" text-anchor="middle" dominant-baseline="middle" class="small">多节点时，各节点的所有 NIC 均连接到这里</text>
+<line x1="70" y1="885" x2="115" y2="885" stroke="#16a34a" stroke-width="4"/>
+<text x="128" y="889" class="legend">GPU↔HBM：8000 GB/s，α=0.5 μs，非全双工</text>
+<line x1="680" y1="885" x2="725" y2="885" stroke="#2563eb" stroke-width="4"/>
+<text x="738" y="889" class="legend">GPU↔NVSwitch：900 GB/s，α=0.5 μs，全双工</text>
+<line x1="1290" y1="885" x2="1335" y2="885" stroke="#9333ea" stroke-width="4"/>
+<text x="1348" y="889" class="legend">Grace↔GPU / Grace↔Grace：NVLink-C2C 450 GB/s，α=0.5 μs，全双工</text>
+<line x1="70" y1="927" x2="115" y2="927" stroke="#0891b2" stroke-width="4"/>
+<text x="128" y="931" class="legend">GPU↔NIC：PCIe 128 GB/s，α=0.5 μs，全双工</text>
+<line x1="680" y1="927" x2="725" y2="927" stroke="#64748b" stroke-width="4"/>
+<text x="738" y="931" class="legend">SSD→Grace 14、Grace→SSD 7 GB/s，α=50 μs，全双工</text>
+<line x1="1290" y1="927" x2="1335" y2="927" stroke="#0e7490" stroke-width="4"/>
+<text x="1348" y="931" class="legend">NIC↔IB：100 GB/s（800 Gb/s），α=1.0 μs，全双工</text>
+<text x="950" y="970" text-anchor="middle" class="small">说明：图中没有 PCIe Switch 节点，因为当前 RoofLang GB300 代码直接建立 GPU–NIC 与 SSD–Grace 链路。</text>
+</svg>
