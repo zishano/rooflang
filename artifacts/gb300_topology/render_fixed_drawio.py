@@ -23,12 +23,21 @@ def vertex(cid, value, x, y, w, h, style):
     return c
 
 
-def edge(cid, src, dst, color, width=2, extra=""):
-    style = ("edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;"
-             "html=1;endArrow=none;startArrow=none;" f"strokeColor={color};strokeWidth={width};" + extra)
-    c = SubElement(root, "mxCell", id=cid, value="", style=style, edge="1",
-                   parent="1", source=src, target=dst)
-    SubElement(c, "mxGeometry", relative="1", as_="geometry")
+def edge(cid, points, color):
+    # Absolute endpoints and explicit waypoints: no attached terminals and no
+    # automatic router. Moving a box requires moving its line endpoints too.
+    c = SubElement(root, "mxCell", id=cid, value="",
+                   style=("edgeStyle=none;noEdgeStyle=1;rounded=0;curved=0;"
+                          "html=1;endArrow=none;startArrow=none;"
+                          f"strokeColor={color};strokeWidth=2;"),
+                   edge="1", parent="1")
+    geom = SubElement(c, "mxGeometry", relative="1", as_="geometry")
+    for key, (x, y) in (("sourcePoint", points[0]), ("targetPoint", points[-1])):
+        SubElement(geom, "mxPoint", x=str(x), y=str(y), as_=key)
+    if len(points) > 2:
+        arr = SubElement(geom, "Array", as_="points")
+        for x, y in points[1:-1]:
+            SubElement(arr, "mxPoint", x=str(x), y=str(y))
     return c
 
 
@@ -53,10 +62,6 @@ vertex("title", "<b>GB300Cluster（nvl_scope=8）：单节点完整拓扑与跨�
 vertex("node_label", "<b>节点 n0：8-GPU NVLink 域</b>", 750, 95, 400, 25,
        "text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=16;fontFamily=Microsoft YaHei;")
 vertex("nvs", "<b>逻辑第 5 代 NVSwitch Fabric</b><br>节点内全部GPU共享", 650, 125, 600, 40, styles["fabric"])
-vertex("nvbus", "", 150, 205, 1580, 1,
-       "shape=line;html=1;strokeColor=#2563eb;strokeWidth=2;direction=east;")
-vertex("ibbus", "", 150, 725, 1580, 1,
-       "shape=line;html=1;strokeColor=#0e7490;strokeWidth=2;direction=east;")
 vertex("ibs", "<b>全集群共享 InfiniBand Switch</b><br>多节点时，各节点的所有NIC均连接到这里",
        665, 790, 570, 50, styles["fabric"])
 
@@ -73,27 +78,32 @@ for i, cx in enumerate(cpu_centers):
     vertex(f"d{i}", f"<b>DRAM {i}</b><br>480 GB", cx - 75, 485, 150, 48, styles["memory"])
 
 eid = 0
-def e(src, dst, color, extra=""):
+
+def e(points, color):
     global eid
     eid += 1
-    edge(f"e{eid}", src, dst, color, extra=extra)
+    edge(f"e{eid}", points, color)
 
-e("nvs", "nvbus", "#2563eb")
-e("ibbus", "ibs", "#0e7490")
-for i in range(8):
-    e("nvbus", f"g{i}", "#2563eb")
-    e(f"g{i}", f"h{i}", "#16a34a")
-    e(f"g{i}", f"i{i}", "#0891b2")
-    e(f"i{i}", "ibbus", "#0e7490")
+# Each horizontal bus is a fixed line, with separate vertical taps.
+e([(150, 215), (1730, 215)], "#2563eb")
+e([(950, 165), (950, 215)], "#2563eb")
+e([(150, 725), (1730, 725)], "#0e7490")
+e([(950, 725), (950, 790)], "#0e7490")
+for x in xs:
+    e([(x+75, 215), (x+75, 235)], "#2563eb")
+    e([(x+75, 285), (x+75, 320)], "#16a34a")
+    e([(x+150, 260), (x+165, 260), (x+165, 674), (x+150, 674)], "#0891b2")
+    e([(x+75, 698), (x+75, 725)], "#0e7490")
 
-for i in range(4):
-    e(f"c{i}", f"g{2*i}", "#9333ea")
-    e(f"c{i}", f"g{2*i+1}", "#9333ea")
-    e(f"c{i}", f"d{i}", "#16a34a")
-    e(f"c{i}", f"s{2*i}", "#64748b")
-    e(f"c{i}", f"s{2*i+1}", "#64748b")
-e("c0", "c1", "#9333ea")
-e("c2", "c3", "#9333ea")
+for i, cx in enumerate(cpu_centers):
+    left, right = xs[2*i], xs[2*i+1]
+    e([(left+150, 260), (left+150, 390), (cx, 390), (cx, 410)], "#9333ea")
+    e([(right, 260), (right, 390), (cx, 390)], "#9333ea")
+    e([(cx, 458), (cx, 485)], "#16a34a")
+    e([(cx-75, 434), (left+75, 434), (left+75, 560)], "#64748b")
+    e([(cx+75, 434), (right+75, 434), (right+75, 560)], "#64748b")
+for left, right in ((260, 700), (1180, 1620)):
+    e([(left+75, 422), (right-75, 422)], "#9333ea")
 
 vertex("legend", ("<b>链路参数（GB/s）</b><br>GPU–HBM 8000｜GPU–NVSwitch 900｜"
                   "Grace–GPU / Grace–Grace 450｜GPU–NIC 128｜NIC–IB 100<br>"
