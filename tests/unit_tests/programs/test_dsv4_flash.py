@@ -5,6 +5,7 @@
 
 import pytest
 
+from rooflang.language.kernels.comm import AllGather, AttentionLseReduce
 from rooflang.programs.experiments import find_pareto_frontier as finder
 from rooflang.programs.models import dsv4_flash
 from rooflang.programs.models.dsv4_flash import model, optimization
@@ -118,6 +119,37 @@ def test_decode_with_index_cache_and_two_pipeline_stages(monkeypatch):
         output_head, seq_prefill=128, cp=1, dp=8, ep=8,
         pp_partition=[2, 2], n_gpus=16)
 
+    graph.validate()
+    placement.validate(graph)
+
+
+@pytest.mark.parametrize("dcp_enabled", [None, True])
+def test_decode_dcp_route_is_opt_in(monkeypatch, dcp_enabled):
+    monkeypatch.setattr(model, "N_LAYERS", 3)
+    monkeypatch.setattr(model, "N_EXPERTS", 8)
+    monkeypatch.setattr(optimization, "N_EXPERTS", 8)
+    graph, layers, emb, read_input, kv_reads, output_head = \
+        model.declare_model(batch_size=8, seq_prefill=512, decode=True)
+    kwargs = dict(cp=2, dp=4, ep=8, pp_partition=[3], n_gpus=8)
+    if dcp_enabled is not None:
+        kwargs["dcp_enabled"] = dcp_enabled
+    graph, placement = optimization.optimize_model_cluster_decode(
+        graph, layers, B300Cluster(n_nodes=1), emb, read_input, kv_reads,
+        output_head, seq_prefill=512, **kwargs)
+
+    layer_attention = layers[2]._decode_copies["cp_dp"]["sa"]
+    assert layer_attention
+    assert all(hasattr(copy, "global_selection") is (dcp_enabled is True)
+               for copy in layer_attention)
+    if dcp_enabled is True:
+        assert any(isinstance(kernel, AllGather) for kernel in graph.kernels)
+        assert any(isinstance(kernel, AttentionLseReduce)
+                   for kernel in graph.kernels)
+        assert placement.metadata["dcp_dataflow"]["topk_ids"] == (
+            "global-cache-absolute-positions")
+        assert all(copy.dcp_dataflow["kv_owner"] ==
+                   "global_position % cp_world"
+                   for copy in layer_attention)
     graph.validate()
     placement.validate(graph)
 

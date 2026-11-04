@@ -12,13 +12,18 @@ from rooflang.language.kernels.comm import (
 )
 from rooflang.language.optimization.comm import optimize_comms
 from rooflang.language.optimization.split import (
-    batch_split, context_split_decode, context_split_prefill, general_dup,
-    kv_persistence_split,
+    batch_split, context_split_decode, context_split_decode_exact,
+    context_split_prefill, general_dup, kv_persistence_split,
+    kv_persistence_split_dcp,
 )
 from rooflang.language.placement import Placement
+from rooflang.language.utils import dtype_bytes
 
 from rooflang.programs.models.dsv4_flash.config import (
-    COMPRESS_RATIOS, N_EXPERTS, TOPK, WINDOW,
+    COMPRESS_RATIOS, INDEX_HD, KV_DIM, N_EXPERTS, TOPK, WINDOW,
+)
+from rooflang.programs.models.dsv4_flash.dcp import (
+    describe_dcp_kv_layouts, resolve_graph_strategy,
 )
 
 
@@ -491,17 +496,27 @@ def optimize_model_cluster_prefill(
 def optimize_model_cluster_decode(
     g, layers, hw, emb=None, read_input=None, kv_cache_reads=None,
     output_head=None, *, seq_prefill, cp, dp, ep, pp_partition, n_gpus,
+    graph_strategy=None,
+    dcp_enabled=False,
 ):
     """Apply CP, DP, EP, and PP to a one-step decode-only graph.
 
-    KV is a persistent read-only model input. The optimizer does not construct
-    cache slices, append the current token, or model cache ownership changes.
+    Every layer uses the same CP degree. ``dcp_enabled`` selects the
+    DCP-specific attention and cache layout; its default preserves the
+    legacy decode split route.
+
+    Persistent KV is read in its final decode layout for this initial
+    implementation.  Preload time is measured separately; a synthetic
+    prefill-to-decode conversion is not claimed as a measured optimization.
     """
     final_norm, logits, sampling = output_head
     batch_size = emb.outputs["y"].shape[0]
     _validate_args(
         layers, batch_size, seq_prefill, False,
         cp, dp, ep, pp_partition, n_gpus)
+    graph_strategy = resolve_graph_strategy(graph_strategy)
+    if not isinstance(dcp_enabled, bool):
+        raise TypeError("dcp_enabled must be boolean")
     _set_expert_weight_read_fraction(layers, batch_size, 1, ep)
     pp_degree = len(pp_partition)
 
@@ -567,7 +582,9 @@ def optimize_model_cluster_decode(
     barrier = layers[0].kv_persist_barrier
     _, barrier_dp_copies, _ = g.split_kernel(batch_split, barrier, dp)
 
-    # Restore each independent DP subgraph before CP is introduced.
+    # Canonicalize each independent DP subgraph before CP is introduced.
+    # This is a legality prerequisite for Q duplication, not a searchable
+    # optimization: without it ``g.dup`` has no Broadcast predecessor.
     optimize_comms(g)
 
     # Apply CP separately inside every DP subgraph. Each attention split now
@@ -575,56 +592,80 @@ def optimize_model_cluster_decode(
     kv_read_cp_dp_groups = []
     for layer_id, dp_copies in kv_read_dp_groups:
         cp_dp_copies = []
+        splitter = (batch_split if cp == 1 else
+                    context_split_decode_exact if dcp_enabled else
+                    context_split_decode)
         for copy in dp_copies:
-            _, copies, _ = g.split_kernel(context_split_decode, copy, cp)
+            _, copies, _ = g.split_kernel(splitter, copy, cp)
             cp_dp_copies.extend(copies)
         kv_read_cp_dp_groups.append((layer_id, cp_dp_copies))
 
     barrier_copies = []
     for copy in barrier_dp_copies:
-        _, copies, _ = g.split_kernel(kv_persistence_split, copy, cp)
+        _, copies, _ = g.split_kernel(
+            kv_persistence_split_dcp if dcp_enabled
+            else kv_persistence_split,
+            copy, cp)
         barrier_copies.extend(copies)
 
-    for layer, dp_fields, layer_copies in zip(
-            layers, dp_fields_by_layer, copies_by_layer):
-        cp_field_names = [
-            *_DECODE_REPLICATED_FIELDS,
-            *_DECODE_SHARDED_FIELDS,
-            "sa", "kv_cache_fan",
-        ]
-        if layer.index_cache_fan is not None:
-            cp_field_names.append("index_cache_fan")
+    for layer_id, (layer, dp_fields, layer_copies) in enumerate(zip(
+            layers, dp_fields_by_layer, copies_by_layer)):
+        if cp == 1:
+            cp_field_names = list(dp_fields)
+        else:
+            cp_field_names = [
+                *_DECODE_REPLICATED_FIELDS,
+                *_DECODE_SHARDED_FIELDS,
+                "sa", "kv_cache_fan",
+            ]
+            if layer.index_cache_fan is not None:
+                cp_field_names.append("index_cache_fan")
         cp_fields = {name: [] for name in cp_field_names}
         for dp_rank in range(dp):
-            _, copies, _ = g.split_kernel(
-                context_split_decode,
-                dp_fields["kv_cache_fan"][dp_rank], cp)
-            cp_fields["kv_cache_fan"].extend(copies)
-
-            if layer.index_cache_fan is not None:
+            if cp == 1:
+                # Request layout: each rank owns B/(DP*C) requests and the
+                # complete context for exactly those requests.  Applying the
+                # same split to every field keeps projection, residual, MoE,
+                # cache, index, and output ownership consistent.
+                for name, dp_copies in dp_fields.items():
+                    _, copies, _ = g.split_kernel(
+                        batch_split, dp_copies[dp_rank], cp)
+                    cp_fields[name].extend(copies)
+            else:
                 _, copies, _ = g.split_kernel(
-                    context_split_decode,
-                    dp_fields["index_cache_fan"][dp_rank], cp)
-                cp_fields["index_cache_fan"].extend(copies)
+                    context_split_decode_exact if dcp_enabled
+                    else context_split_decode,
+                    dp_fields["kv_cache_fan"][dp_rank], cp)
+                cp_fields["kv_cache_fan"].extend(copies)
 
-            sa_prev, copies, _ = g.split_kernel(
-                context_split_decode, dp_fields["sa"][dp_rank], cp)
-            cp_fields["sa"].extend(copies)
+                if layer.index_cache_fan is not None:
+                    _, copies, _ = g.split_kernel(
+                        context_split_decode_exact if dcp_enabled
+                        else context_split_decode,
+                        dp_fields["index_cache_fan"][dp_rank], cp)
+                    cp_fields["index_cache_fan"].extend(copies)
 
-            q_broadcast = sa_prev["q"]
-            for name in reversed(_DECODE_REPLICATED_FIELDS):
-                q_broadcast, copies = g.dup(
-                    general_dup, dp_fields[name][dp_rank])
-                cp_fields[name].extend(copies)
+                sa_prev, copies, _ = g.split_kernel(
+                    context_split_decode_exact if dcp_enabled
+                    else context_split_decode,
+                    dp_fields["sa"][dp_rank], cp)
+                cp_fields["sa"].extend(copies)
 
-            for name in _DECODE_SHARDED_FIELDS:
-                _, copies, _ = g.split_kernel(
-                    batch_split, dp_fields[name][dp_rank], cp)
-                cp_fields[name].extend(copies)
+                q_broadcast = sa_prev["q"]
+                for name in reversed(_DECODE_REPLICATED_FIELDS):
+                    q_broadcast, copies = g.dup(
+                        general_dup, dp_fields[name][dp_rank])
+                    cp_fields[name].extend(copies)
+
+                for name in _DECODE_SHARDED_FIELDS:
+                    _, copies, _ = g.split_kernel(
+                        batch_split, dp_fields[name][dp_rank], cp)
+                    cp_fields[name].extend(copies)
 
         layer_copies["cp_dp"] = cp_fields
 
-    optimize_comms(g)
+    if graph_strategy["comm_fusion"]:
+        optimize_comms(g)
 
     # Treat KV loading as a preload phase. The token reader marks the start of
     # the measured decode step and cannot run until every DP×CP KV shard has
@@ -671,14 +712,25 @@ def optimize_model_cluster_decode(
     for layer_id, (layer, layer_copies) in enumerate(
             zip(layers, copies_by_layer)):
         devices = stage_gpus[layer_stages[layer_id]]
-        for copies in layer_copies["dp"].values():
-            for dp_rank, kernel in enumerate(copies):
-                placement.set_kernel_device(
-                    kernel, devices[dp_rank * cp])
+        if cp > 1:
+            for copies in layer_copies["dp"].values():
+                for dp_rank, kernel in enumerate(copies):
+                    placement.set_kernel_device(
+                        kernel, devices[dp_rank * cp])
 
         for copies in layer_copies["cp_dp"].values():
             for rank, kernel in enumerate(copies):
                 placement.set_kernel_device(kernel, devices[rank])
+
+        if graph_strategy.get("schedule") == "dual-stream-shared-expert":
+            shared_stream = int(
+                graph_strategy.get("shared_expert_stream", 1))
+            for name in ("sw_up", "sw_down"):
+                for kernel in layer_copies["cp_dp"].get(name, []):
+                    assignment = placement.get_kernel_device(kernel)
+                    placement.set_kernel_device(
+                        kernel, assignment.device, stream=shared_stream,
+                        resource_cap=assignment.resource_cap)
 
         route_fields = {
             name: layer_copies["cp_dp"][name]
@@ -692,9 +744,10 @@ def optimize_model_cluster_decode(
         stage = layer_stages[layer_id]
         if stage == layer_stages[layer_id - 1]:
             continue
-        bridges = copies_by_layer[layer_id]["dp"]["bridge"]
-        for dp_rank, bridge in enumerate(bridges):
-            device = stage_gpus[stage][dp_rank * cp]
+        group = "dp" if cp > 1 else "cp_dp"
+        bridges = copies_by_layer[layer_id][group]["bridge"]
+        for rank, bridge in enumerate(bridges):
+            device = stage_gpus[stage][rank]
             _place_pp_boundary_spawn(
                 g, placement, bridge, hw.find_local_memory(device))
 
@@ -712,6 +765,38 @@ def optimize_model_cluster_decode(
             placement.set_tensor_memory(tensor, output_memory)
 
     _place_comm_tensor_memories(g, placement)
+    stage_owner_names = [
+        tuple(device.name for device in stage_gpus[layer_stages[layer_id]])
+        for layer_id in range(len(layers))
+    ]
+    placement.metadata = {
+        "cp": cp,
+        "dp": dp,
+        "ep": ep,
+        "pp_partition": list(pp_partition),
+        "graph_strategy": graph_strategy,
+        "dcp_enabled": dcp_enabled,
+        "dcp_dataflow": ({
+            "index_kv": "replicated-on-cp-ranks",
+            "topk_ids": "global-cache-absolute-positions",
+            "kv_owner": "position-mod-cp",
+            "owner_local_row": "position-div-cp",
+            "attention_merge": "stable-lse",
+        } if dcp_enabled else None),
+        "kv_layout_strategy": (
+            "cyclic-context-replicated-index-v1" if dcp_enabled
+            else "legacy-contiguous-context-v1"),
+        "kv_preload_assumption": (
+            "cache is materialized directly in its target decode layout; "
+            "prefill-to-decode conversion time is not included"),
+        "layer_kv_layouts": [
+            layout.to_dict()
+            for layout in describe_dcp_kv_layouts(
+                cp, batch_size, dp, seq_prefill, dcp_enabled,
+                COMPRESS_RATIOS[:len(layers)], WINDOW, stage_owner_names,
+                KV_DIM, INDEX_HD, dtype_bytes("fp8"), dtype_bytes("fp4"))
+        ],
+    }
     g.validate()
     placement.validate(g)
     _record_kv_cache_footprints(

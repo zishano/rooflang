@@ -14,6 +14,7 @@ tiles (no S² in HBM). Each docstring states its own reuse model.
 from fractions import Fraction
 
 from rooflang.language.kernels.kernel import Kernel
+from rooflang.language.tensor import Tensor
 from rooflang.language.utils import dtype_bytes, gemm_scale_bytes
 
 
@@ -72,6 +73,65 @@ class ReadInput(Kernel):
     @property
     def output_bytes(self) -> float:
         return self.n_elements * dtype_bytes(self.dtype_)
+
+
+class KVCacheAppend(Kernel):
+    """Append already-encoded KV rows into a preallocated persistent cache.
+
+    ``cache`` and ``updated`` are two logical versions of the same storage.
+    The output aliases the input cache allocation; only ``append_slots`` rows
+    are read from ``new_kv`` and written back.  The operation deliberately
+    does not implement model-specific KV compression: callers must provide
+    entries already encoded in the cache's dtype and layout.
+    """
+
+    def __init__(self, batch: int, capacity: int, dim: int,
+                 append_slots: int = 1, dtype: str = "fp8"):
+        if min(batch, capacity, dim, append_slots) <= 0:
+            raise ValueError("KV append dimensions must be positive")
+        if append_slots > capacity:
+            raise ValueError("append_slots cannot exceed cache capacity")
+        self.batch = batch
+        self.capacity = capacity
+        self.dim = dim
+        self.append_slots = append_slots
+        self.dtype_ = dtype
+        cache_shape = (batch, capacity, dim)
+        append_shape = (batch, append_slots, dim)
+        super().__init__(
+            inputs={
+                "cache": Tensor(dtype, cache_shape),
+                "new_kv": Tensor(dtype, append_shape),
+            },
+            outputs={"updated": Tensor(dtype, cache_shape)},
+        )
+        self.inplace_aliases = {"updated": "cache"}
+
+    @property
+    def flops(self) -> float:
+        return 0.0
+
+    def input_read_fraction(self, port: str) -> float:
+        return 0.0 if port == "cache" else 1.0
+
+    def output_write_fraction(self, port: str) -> float:
+        if port != "updated":
+            return 1.0
+        return self.append_slots / self.capacity
+
+    @property
+    def input_bytes(self) -> float:
+        return (self.batch * self.append_slots * self.dim
+                * dtype_bytes(self.dtype_))
+
+    @property
+    def weight_bytes(self) -> float:
+        return 0.0
+
+    @property
+    def output_bytes(self) -> float:
+        return (self.batch * self.append_slots * self.dim
+                * dtype_bytes(self.dtype_))
 
 
 class Slice(Kernel):
@@ -841,8 +901,13 @@ class DpskV4SparseAttn(Kernel):
 
     @property
     def output_bytes(self) -> float:
-        return (self.B * self.H * self.S_q * self.Hd
+        main = (self.B * self.H * self.S_q * self.Hd
                 * dtype_bytes(self.out_dtype))
+        return main + sum(
+            tensor.size_bytes
+            for port, tensor in self.outputs.items()
+            if port != "y"
+        )
 
 
 class Glm52SparseAttn(Kernel):

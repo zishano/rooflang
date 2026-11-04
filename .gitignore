@@ -1,0 +1,17 @@
+__pycache__/
+.cache/
+.deployment/
+.github/
+.pytest_cache/
+*.json
+*.md
+*.pdf
+.venv/
+dsv4_flash_pareto/
+docs/
+run.sh
+results/
+tests/
+tools/
+agents/find_pareto_frontier/agent.env
+agents/**/agent.env

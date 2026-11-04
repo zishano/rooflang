@@ -64,6 +64,10 @@ class Kernel:
         """Return the fraction of one input tensor read by this invocation."""
         return 1.0
 
+    def output_write_fraction(self, port: str) -> float:
+        """Return the fraction of one output tensor written by this invocation."""
+        return 1.0
+
     @property
     def input_tensor_bytes(self) -> float:
         return sum(t.size_bytes for t in self.inputs.values())
@@ -85,7 +89,8 @@ class Kernel:
 
     @property
     def output_bytes(self) -> float:
-        return sum(t.size_bytes for t in self.outputs.values())
+        return sum(t.size_bytes * self.output_write_fraction(port)
+                   for port, t in self.outputs.items())
 
     @property
     def transferred_bytes(self) -> float:

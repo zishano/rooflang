@@ -32,8 +32,8 @@ from collections import deque
 from typing import TYPE_CHECKING
 
 from rooflang.language.kernels.comm import (
-    AllGather, AllReduce, AllToAll, Broadcast, CommKernel, Gather, Reduce,
-    ReduceScatter, Scatter,
+    AllGather, AllReduce, AllToAll, AttentionLseReduce, Broadcast, CommKernel,
+    Gather, Reduce, ReduceScatter, Scatter,
 )
 from rooflang.language.tensor import Tensor
 
@@ -91,7 +91,8 @@ def _fuse_pairs(graph: ComputeGraph) -> bool:
     while True:
         pairs = []
         for kernel in list(graph._dag.nodes):
-            if not isinstance(kernel, (Gather, Reduce)):
+            if not isinstance(kernel, (Gather, Reduce)) \
+                    or isinstance(kernel, AttentionLseReduce):
                 continue
             successor = _single_data_neighbor(graph._dag.succ[kernel])
             if successor is None:

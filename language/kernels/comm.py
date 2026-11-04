@@ -252,6 +252,23 @@ class Scatter(CommKernel):
         return self.total_bytes / self.world
 
 
+class CyclicScatter(Scatter):
+    """Scatter sequence rows by cyclic owner instead of contiguous chunks.
+
+    For interleave size one, rank ``r`` receives rows ``r, r+world, ...``.
+    The network volume is the same as Scatter; this subtype preserves the
+    placement rule so traces and tests can distinguish the data layout.
+    """
+
+    def __init__(self, total_bytes: float, world: int, dim: int = 0,
+                 interleave_size: int = 1):
+        if interleave_size <= 0:
+            raise ValueError("interleave_size must be positive")
+        self.interleave_size = interleave_size
+        self.shard_scheme = "cyclic"
+        super().__init__(total_bytes=total_bytes, world=world, dim=dim)
+
+
 class Gather(CommKernel):
     """Gather: each rank sends its slice to root which concatenates.
 
@@ -318,6 +335,96 @@ class Reduce(CommKernel):
     @property
     def output_bytes(self) -> float:
         return self.total_bytes
+
+
+class AttentionLseReduce(Reduce):
+    """Merge normalized attention partials with log-sum-exp statistics.
+
+    This is not an element-wise ``Reduce``.  Every rank sends its locally
+    normalized output together with ``(max_logit, exp_sum)`` statistics.  The
+    merged output is
+
+        sum_i exp(local_max_i - global_max) * local_sum_i * local_output_i
+        ------------------------------------------------------------------
+                    sum_i exp(local_max_i - global_max) * local_sum_i
+
+    The reduced ports expose both payloads so placement and simulator memory
+    accounting see the statistic traffic.  ``total_bytes`` remains the logical
+    output size for compatibility with communication cost conventions.
+    """
+
+    _single_input = True
+    _single_output = True
+
+    def __init__(
+        self, total_bytes: float, world: int, dtype: str = "bf16",
+        stats_bytes_per_rank: float = 0.0,
+    ):
+        if stats_bytes_per_rank < 0:
+            raise ValueError("stats_bytes_per_rank must be non-negative")
+        self.stats_bytes_per_rank = stats_bytes_per_rank
+        self.split_extra_inputs = {"attn_stats": "s{i}"}
+        super().__init__(total_bytes=total_bytes, world=world, dtype=dtype)
+
+    def validate_ports(self) -> None:
+        if len(self.inputs) != 2 * self.world or len(self.outputs) != 1:
+            raise ValueError(
+                "AttentionLseReduce: expected world output partials, world "
+                "statistic tensors, and one merged output")
+
+    @property
+    def flops(self) -> float:
+        # Weighted output accumulation, stable global max, and denominator.
+        n_elements = self.total_bytes / dtype_bytes(self.dtype_)
+        return float((self.world - 1) * n_elements * 3 +
+                     self.world * 4)
+
+    @property
+    def input_bytes(self) -> float:
+        return self.total_bytes + self.world * self.stats_bytes_per_rank
+
+    @property
+    def transferred_bytes(self) -> float:
+        return self.total_bytes + self.world * self.stats_bytes_per_rank
+
+
+class SparseGlobalSelect(Scatter):
+    """Scatter caches while preserving exact global sparse selection.
+
+    A plain context ``Scatter`` lets each rank select a local top-k.  This
+    fusion models the required preparation instead: local index scores are
+    exchanged to select one global top-k set, then the selected KV entries are
+    routed to the ranks that consume them.  The index shard remains the
+    visible tensor payload; selection metadata and selected-KV traffic are
+    explicit attributes rather than unaccounted implementation details.
+    """
+
+    def __init__(
+        self, total_bytes: float, world: int, dim: int = 0, *,
+        selected_kv_bytes: float = 0.0,
+        selection_metadata_bytes: float = 0.0,
+        selection_flops: float = 0.0,
+    ):
+        if min(selected_kv_bytes, selection_metadata_bytes,
+               selection_flops) < 0:
+            raise ValueError("sparse selection costs must be non-negative")
+        self.selected_kv_bytes = selected_kv_bytes
+        self.selection_metadata_bytes = selection_metadata_bytes
+        self.selection_flops = selection_flops
+        super().__init__(total_bytes=total_bytes, world=world, dim=dim)
+
+    @property
+    def flops(self) -> float:
+        return self.selection_flops
+
+    @property
+    def transferred_bytes(self) -> float:
+        remote_fraction = (self.world - 1) / self.world
+        return (
+            super().transferred_bytes
+            + remote_fraction
+            * (self.selected_kv_bytes + self.selection_metadata_bytes)
+        )
 
 
 class Send(CommKernel):
