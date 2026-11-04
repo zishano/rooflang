@@ -639,6 +639,7 @@ def optimize_model_cluster_decode(
     # its destination HBM during the preload phase.  The later comm-memory
     # propagation carries this SSD placement through split-generated root
     # Scatter kernels, so the unsplit external inputs do not consume DRAM.
+    #kv放置策略
     for layer_id, copies in kv_read_cp_dp_groups:
         devices = stage_gpus[layer_stages[layer_id]]
         for rank, kernel in enumerate(copies):
@@ -648,7 +649,7 @@ def optimize_model_cluster_decode(
             placement.set_tensor_memory(
                 source_tensor,
                 _nearby_memory(device, gpus_by_node, ssds))
-
+    #token嵌入放置策略
     first_devices = stage_gpus[0]
     placement.set_kernel_device(read_input, first_devices[0])
     placement.set_tensor_memory(
@@ -657,7 +658,7 @@ def optimize_model_cluster_decode(
     for dp_rank, kernel in enumerate(emb_dp_copies):
         placement.set_kernel_device(
             kernel, first_devices[dp_rank * cp])
-
+    #输出头放置策略
     final_devices = stage_gpus[layer_stages[-1]]
     for copies in (
         final_norm_dp_copies,
@@ -667,7 +668,7 @@ def optimize_model_cluster_decode(
         for dp_rank, kernel in enumerate(copies):
             placement.set_kernel_device(
                 kernel, final_devices[dp_rank * cp])
-
+    #逐层放置策略
     for layer_id, (layer, layer_copies) in enumerate(
             zip(layers, copies_by_layer)):
         devices = stage_gpus[layer_stages[layer_id]]
@@ -687,7 +688,7 @@ def optimize_model_cluster_decode(
         _place_experts_and_routes(
             g, layer, route_fields, devices, placement, hw,
             shard_experts=True)
-
+    #pp边界处理
     for layer_id in range(1, len(layers)):
         stage = layer_stages[layer_id]
         if stage == layer_stages[layer_id - 1]:
@@ -697,7 +698,7 @@ def optimize_model_cluster_decode(
             device = stage_gpus[stage][dp_rank * cp]
             _place_pp_boundary_spawn(
                 g, placement, bridge, hw.find_local_memory(device))
-
+    #持久化屏障张量放置
     for rank, barrier_copy in enumerate(barrier_copies):
         for input_name, tensor in barrier_copy.inputs.items():
             if input_name.startswith("kv"):
